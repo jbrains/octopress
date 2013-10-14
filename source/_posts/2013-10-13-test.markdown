@@ -1,0 +1,111 @@
+---
+layout: post
+title: "Test"
+date: 2013-10-13 13:16
+comments: true
+categories: 
+---
+# GistNoCss Tag
+
+## Single File
+
+### Specify maximum parameters
+{% gist_no_css jbrains/4111662 TestingIoFailure.java %}
+
+### Do not specify username
+{% gist_no_css 4111662 TestingIoFailure.java %}
+
+### Do not specify filename
+{% gist_no_css jbrains/4111662 %}
+
+### Specify only gist ID
+{% gist_no_css 4111662 %}
+
+## Multiple Files
+
+### Specify maximum parameters
+{% gist_no_css jbrains/6964587 Gist1.java %}
+{% gist_no_css jbrains/6964587 Gist2.rb %}
+
+### Do not specify username
+{% gist_no_css 6964587 Gist1.java %}
+{% gist_no_css 6964587 Gist2.rb %}
+
+### Do not specify filename
+We only see the first file.
+{% gist_no_css jbrains/6964587 %}
+
+### Specify only gist ID
+We only see the first file.
+{% gist_no_css 6964587 %}
+
+# Specify all gist parameters in CodeBlock Tag
+{% codeblock https://gist.github.com/jbrains/4111662 TestingIoFailure.java %}
+@Test
+public void ioFailure() throws Exception {
+    final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+    try {
+        new WriteTextToFileActionImpl() {
+            @Override
+            protected FileWriter fileWriterOn(File path) throws IOException {
+                return new FileWriter(path) {
+                    @Override
+                    public void write(String str, int off, int len) throws IOException {
+                        throw ioFailure;
+                    }
+                };
+            }
+        }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+        fail("How did you survive the I/O failure?!");
+    } catch (IOException success) {
+        if (success != ioFailure)
+            throw success;
+    }
+}
+{% endcodeblock %}
+
+# Specify minimum parameters in CodeBlock Tag
+
+{% codeblock https://gist.github.com/4111662 %}
+@Test
+public void ioFailure() throws Exception {
+    final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+    try {
+        new WriteTextToFileActionImpl() {
+            @Override
+            protected FileWriter fileWriterOn(File path) throws IOException {
+                return new FileWriter(path) {
+                    @Override
+                    public void write(String str, int off, int len) throws IOException {
+                        throw ioFailure;
+                    }
+                };
+            }
+        }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+        fail("How did you survive the I/O failure?!");
+    } catch (IOException success) {
+        if (success != ioFailure)
+            throw success;
+    }
+}
+{% endcodeblock %}
+
+# Include using Gist Tag
+
+## Single File
+
+### Specify only Gist ID
+{% gist 4111662 %}
+
+### Do not specify username
+{% gist 4111662 TestingIoFailure.java %}
+
+## Multiple Files
+
+### Specify only Gist ID
+{% gist 6964587 %}
+
+### Do not specify username
+{% gist 6964587 Gist1.java %}
+{% gist 6964587 Gist2.rb %}
+
