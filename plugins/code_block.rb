@@ -75,20 +75,12 @@ module Jekyll
       @caption = nil
       @filetype = nil
       @highlight = true
-      if markup =~ /\s*lang:(\S+)/i
-        @filetype = $1
-        markup = markup.sub(/\s*lang:(\S+)/i,'')
-      end
-      if markup =~ CaptionUrlTitle
-        @file = $1
-        @caption = "<figcaption><span>#{$1}</span><a href='#{$2}'>#{$3 || 'link'}</a></figcaption>"
-      elsif markup =~ Caption
-        @file = $1
-        @caption = "<figcaption><span>#{$1}</span></figcaption>\n"
-      end
-      if @file =~ /\S[\S\s]*\w+\.(\w+)/ && @filetype.nil?
-        @filetype = $1
-      end
+
+      parsed_tag_parameters = self.class.parse_tag_parameters(markup)
+      @filetype = parsed_tag_parameters[:filetype]
+      @file = parsed_tag_parameters[:file]
+      @caption = parsed_tag_parameters[:caption]
+
       super
     end
 
