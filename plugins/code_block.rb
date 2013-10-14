@@ -71,13 +71,13 @@ module Jekyll
     end
 
     def initialize(tag_name, markup, tokens)
+      # SMELL This appears to be completely unused.
       @title = nil
-      @caption = nil
-      @filetype = nil
       @highlight = true
 
       parsed_tag_parameters = self.class.parse_tag_parameters(markup)
       @filetype = parsed_tag_parameters[:filetype]
+      # SMELL This appears to be completely unused.
       @file = parsed_tag_parameters[:file]
       @caption = parsed_tag_parameters[:caption]
 
