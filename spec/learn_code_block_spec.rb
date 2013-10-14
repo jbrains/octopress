@@ -1,3 +1,4 @@
+require "rspec"
 require "plugins/code_block"
 
 describe "Parsing parameters for {% codeblock %}" do
