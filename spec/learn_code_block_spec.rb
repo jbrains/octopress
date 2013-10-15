@@ -13,11 +13,10 @@ describe "Parsing parameters for codeblock" do
   end
 
   example "all advertised parameters" do
-    results = Jekyll::CodeBlock.parse_tag_parameters("A nice, simple caption gist2.rb see more")
+    results = Jekyll::CodeBlock.parse_tag_parameters("A nice, simple caption for gist2.rb http://www.jbrains.ca see more")
     # SMELL caption is captionHtml, rather than caption text; more context dependence
-    pending("Another mistake: the 'file' and 'caption' properties are wrong, and it appears that nobody's using the 'file' property.") do
-      results.should == {filetype: "rb", file: "gist2.rb", caption: "<figcaption><span>A nice, simple caption</span></figcaption>\n"}
-    end
+    # SMELL production code computes obsolete property 'file'
+    results.delete_if { |key, _| key == :file }.should == {filetype: "rb", caption: %Q{<figcaption><span>A nice, simple caption for gist2.rb</span><a href='http://www.jbrains.ca'>see more</a></figcaption>}}
   end
 end
 

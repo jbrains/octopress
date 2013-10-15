@@ -92,9 +92,11 @@ module Jekyll
       if @filetype
         source += "#{highlight(code, @filetype)}</figure>"
       else
+        # WTF is all the stripping and the gsub?!
         source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}</figure>"
       end
       source = safe_wrap(source)
+      # pygments_prefix/suffix come from the HighlightCode module?
       source = context['pygments_prefix'] + source if context['pygments_prefix']
       source = source + context['pygments_suffix'] if context['pygments_suffix']
       source
