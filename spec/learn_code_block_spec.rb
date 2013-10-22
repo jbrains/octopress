@@ -34,7 +34,14 @@ describe "Parsing parameters for codeblock" do
     })
   end
 
-  example "a multiple-word title that looks like it has a filename in the middle"
+  example "a multiple-word title that looks like it has a filename in the middle" do
+    Jekyll::CodeBlock.parse_tag_parameters("word filename.xyz more words").should include({
+      filetype: "xyz",
+      caption: %Q{<figcaption><span>word filename.xyz more words</span></figcaption>}
+    })
+  end
+
+  example "a multiple-word title that starts with a filename"
 
   example "all advertised parameters" do
     Jekyll::CodeBlock.parse_tag_parameters("A nice, simple caption for gist2.rb http://www.jbrains.ca see more").should include({
