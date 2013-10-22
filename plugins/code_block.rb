@@ -97,8 +97,6 @@ module Jekyll
     end
 
     def render(context)
-      # SMELL No-one appears to be using 'output'
-      output = super
       code = super
       source = "<figure class='code'>"
       source += @caption if @caption
