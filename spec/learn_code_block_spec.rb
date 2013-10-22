@@ -19,7 +19,7 @@ describe "Parsing parameters for codeblock" do
     results = Jekyll::CodeBlock.parse_tag_parameters("anything that does not contain a dot")
     results.should include({ 
       filetype: nil,
-      caption: %Q{<figcaption><span>anything that does not contain a dot</span></figcaption>\n}
+      caption: %Q{<figcaption><span>anything that does not contain a dot</span></figcaption>}
     })
   end
 
@@ -27,7 +27,7 @@ describe "Parsing parameters for codeblock" do
     results = Jekyll::CodeBlock.parse_tag_parameters("filename.xyz")
     results.should include({ 
       filetype: "xyz",
-      caption: %Q{<figcaption><span>filename.xyz</span></figcaption>\n}
+      caption: %Q{<figcaption><span>filename.xyz</span></figcaption>}
     })
   end
 

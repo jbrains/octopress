@@ -73,7 +73,7 @@ module Jekyll
         # Why, exactly, do we assume that the caption text is a file?!
         # What if the only text is actually a URL?!
         file = $1
-        caption = "<figcaption><span>#{$1}</span></figcaption>\n"
+        caption = "<figcaption><span>#{$1}</span></figcaption>"
       end
 
       if file =~ /\S[\S\s]*\w+\.(\w+)/ && filetype.nil?
