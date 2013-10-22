@@ -50,20 +50,32 @@ module Jekyll
     include HighlightCode
     include TemplateWrapper
     CaptionUrlTitle = /(\S[\S\s]*)\s+(https?:\/\/\S+|\/\S+)\s*(.+)?/i
+    UrlOnly = /(https?:\/\/\S+|\/\S+)/i
     Caption = /(\S[\S\s]*)/
 
     def self.parse_tag_parameters(markup)
+      # Process, then extract "lang:" attribute
       if markup =~ /\s*lang:(\S+)/i
         filetype = $1
         markup = markup.sub(/\s*lang:(\S+)/i,'')
       end
+
       if markup =~ CaptionUrlTitle
+        # Match exactly <caption> <URL> <title>
         file = $1
         caption = "<figcaption><span>#{$1}</span><a href='#{$2}'>#{$3 || 'link'}</a></figcaption>"
+      elsif markup =~ UrlOnly
+        file = nil
+        filetype = nil
+        caption = "<figcaption><span>#{$1}</span><a href='#{$1}'>#{'link'}</a></figcaption>"
       elsif markup =~ Caption
+        # Match exactly <caption>
+        # Why, exactly, do we assume that the caption text is a file?!
+        # What if the only text is actually a URL?!
         file = $1
         caption = "<figcaption><span>#{$1}</span></figcaption>\n"
       end
+
       if file =~ /\S[\S\s]*\w+\.(\w+)/ && filetype.nil?
         filetype = $1
       end
@@ -90,11 +102,24 @@ module Jekyll
       source = "<figure class='code'>"
       source += @caption if @caption
       if @filetype
-        source += "#{highlight(code, @filetype)}</figure>"
+        begin
+          source += "#{highlight(code, @filetype)}"
+        rescue => highlighting_error
+          # Really? No logging?
+          puts "Couldn't highlight code. Falling back to tableizing. Here is the cause:"
+          puts highlighting_error
+          puts highlighting_error.backtrace
+          puts "Here is the code:"
+          puts code
+          puts "Here are the tag parameters:"
+          puts @markup
+          source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
+        end
       else
         # WTF is all the stripping and the gsub?!
-        source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}</figure>"
+        source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
       end
+      source += "</figure>"
       source = safe_wrap(source)
       # pygments_prefix/suffix come from the HighlightCode module?
       source = context['pygments_prefix'] + source if context['pygments_prefix']

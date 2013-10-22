@@ -6,10 +6,10 @@ require "plugins/code_block"
 
 describe "Parsing parameters for codeblock" do
   example "only a URL" do
-    results = Jekyll::CodeBlock.parse_tag_parameters("https://gist.github.com/1234")
-    pending("Filetype appears to be interpreted incorrectly") do
-      results[:filetype].should be_nil
-    end
+    results = Jekyll::CodeBlock.parse_tag_parameters("https://gist.github.com/1234 ")
+    results[:caption].should == %Q{<figcaption><span>https://gist.github.com/1234</span><a href='https://gist.github.com/1234'>#{'link'}</a></figcaption>}
+    results[:filetype].should be_nil
+    results[:file].should be_nil
   end
 
   example "all advertised parameters" do

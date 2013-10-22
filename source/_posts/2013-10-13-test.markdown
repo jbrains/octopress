@@ -66,6 +66,8 @@ public void ioFailure() throws Exception {
 
 # Specify minimum parameters in CodeBlock Tag
 
+This test is failing, because the `codeblock` tag interprets the URL as a language/filetype and tries to highlight code for the language "com", matching `.com` in the URL.
+
 {% codeblock https://gist.github.com/4111662 %}
 @Test
 public void ioFailure() throws Exception {
