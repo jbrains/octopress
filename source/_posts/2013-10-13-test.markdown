@@ -39,7 +39,10 @@ We only see the first file.
 We only see the first file.
 {% gist_no_css 6964587 %}
 
-# Specify all gist parameters in CodeBlock Tag
+# Specify all available gist parameters in CodeBlock Tag
+
+A gist has no title, only a URL and possibly a filename.
+
 {% codeblock https://gist.github.com/jbrains/4111662 TestingIoFailure.java %}
 @Test
 public void ioFailure() throws Exception {
