@@ -61,5 +61,17 @@ describe "Parsing parameters for codeblock" do
       caption: %Q{<figcaption><span>filename.xyz</span></figcaption>}
     })
   end
+
+  example "filename then URL" do
+    Jekyll::CodeBlock.parse_tag_parameters("Awesome.java http://www.jbrains.ca/permalink/x/y/z").should include({
+      filetype: "java",
+      caption: %Q{<figcaption><span>Awesome.java</span><a href='http://www.jbrains.ca/permalink/x/y/z'>link</a></figcaption>}
+    })
+  end
+
+
+  example "URL then filename" do
+    # We don't handle this case, so anything we do is just fine!
+  end
 end
 
