@@ -69,7 +69,6 @@ describe "Parsing parameters for codeblock" do
     })
   end
 
-
   example "URL then filename" do
     # We don't handle this case, so anything we do is just fine!
   end
