@@ -54,5 +54,12 @@ describe "Parsing parameters for codeblock" do
       caption: %Q{<figcaption><span>A nice, simple caption for gist2.rb</span><a href='http://www.jbrains.ca'>see more</a></figcaption>}
     })
   end
+
+  example "lang attribute conflicts with filename extension" do
+    Jekyll::CodeBlock.parse_tag_parameters("filename.xyz lang:rb").should include({
+      filetype: "rb",
+      caption: %Q{<figcaption><span>filename.xyz</span></figcaption>}
+    })
+  end
 end
 
