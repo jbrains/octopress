@@ -98,11 +98,28 @@ module Jekyll
 
     def render(context)
       code = super
+      
+      # REFACTOR Use a StringIO as a collecting parameter; put the builders on a little object.
       source = ""
       source += @caption if @caption
+
+      highlighted = try_highlighting_the_code(source, code)
+
+      # Why escape only '<'? Why not other characters that might confuse XML/HTML?
+      source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}" unless highlighted
+      
+      # REFACTOR These functions want to be Builder methods on a 'source' object.
+      apply_pygments_prefix_and_suffix(context,
+        treat_as_raw_text(
+          enclose_in_code_figure(source)))
+    end
+
+    def try_highlighting_the_code(source, code)
+      highlighted = false
       if @filetype
         begin
-          source += "#{highlight(code, @filetype)}"
+          source << "#{highlight(code, @filetype)}"
+          highlighted = true
         rescue => highlighting_error
           # Really? No logging?
           puts "Couldn't highlight code. Falling back to tableizing. Here is the cause:"
@@ -112,17 +129,10 @@ module Jekyll
           puts code
           puts "Here are the tag parameters:"
           puts @markup
-          source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
         end
-      else
-        # WTF is all the stripping and the gsub?!
-        source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
       end
-      
-      # REFACTOR These functions want to be Builder methods on a 'source' object.
-      apply_pygments_prefix_and_suffix(context,
-        treat_as_raw_text(
-          enclose_in_code_figure(source)))
+
+      highlighted
     end
 
     def enclose_in_code_figure(html)

@@ -41,7 +41,8 @@ We only see the first file.
 
 # Specify all available gist parameters in CodeBlock Tag
 
-A gist has no title, only a URL and possibly a filename.
+## (FAILS) First URL, then filename
+This won't work, because `codeblock` won't infer the syntax highlighting language from the filename. It instead *ignores the filename entirely*.
 
 {% codeblock https://gist.github.com/jbrains/4111662 TestingIoFailure.java %}
 @Test
@@ -67,7 +68,35 @@ public void ioFailure() throws Exception {
 }
 {% endcodeblock %}
 
+## First filename, then URL
+In order to get syntax highlighting, we must specify the filename, then the URL.
+
+{% codeblock TestingIoFailure.java https://gist.github.com/jbrains/4111662 %}
+@Test
+public void ioFailure() throws Exception {
+    final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+    try {
+        new WriteTextToFileActionImpl() {
+            @Override
+            protected FileWriter fileWriterOn(File path) throws IOException {
+                return new FileWriter(path) {
+                    @Override
+                    public void write(String str, int off, int len) throws IOException {
+                        throw ioFailure;
+                    }
+                };
+            }
+        }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+        fail("How did you survive the I/O failure?!");
+    } catch (IOException success) {
+        if (success != ioFailure)
+            throw success;
+    }
+}
+{% endcodeblock %}
+
 # Specify minimum parameters in CodeBlock Tag
+If we don't specify the filename, then we don't get syntax highlighting, and that sucks.
 
 {% codeblock https://gist.github.com/4111662 %}
 @Test
