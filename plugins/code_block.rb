@@ -118,6 +118,8 @@ module Jekyll
         # WTF is all the stripping and the gsub?!
         source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
       end
+      
+      # REFACTOR These functions want to be Builder methods on a 'source' object.
       apply_pygments_prefix_and_suffix(context,
         treat_as_raw_text(
           enclose_in_code_figure(source)))
