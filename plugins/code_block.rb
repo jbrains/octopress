@@ -120,11 +120,14 @@ module Jekyll
       end
       source += "</figure>"
       source = safe_wrap(source)
-      # pygments_prefix/suffix come from the HighlightCode module?
-      source = context['pygments_prefix'] + source if context['pygments_prefix']
-      source = source + context['pygments_suffix'] if context['pygments_suffix']
-      source
+      apply_pygments_prefix_and_suffix(source)
     end
+  end
+
+  # Something to do with making pygments work with textile. I couldn't reverse-engineer the purpose.
+  def apply_pygments_prefix_and_suffix(text)
+    # Remember: nil.to_s => ""
+    context['pygments_prefix'].to_s + text + context['pygments_suffix'].to_s
   end
 end
 
