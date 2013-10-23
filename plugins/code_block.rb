@@ -98,7 +98,7 @@ module Jekyll
 
     def render(context)
       code = super
-      source = "<figure class='code'>"
+      source = ""
       source += @caption if @caption
       if @filetype
         begin
@@ -118,16 +118,27 @@ module Jekyll
         # WTF is all the stripping and the gsub?!
         source += "#{tableize_code(code.lstrip.rstrip.gsub(/</,'&lt;'))}"
       end
-      source += "</figure>"
-      source = safe_wrap(source)
-      apply_pygments_prefix_and_suffix(source)
+      apply_pygments_prefix_and_suffix(context,
+        treat_as_raw_text(
+          surround_with(source, "<figure class='code'>", "</figure>")))
     end
-  end
 
-  # Something to do with making pygments work with textile. I couldn't reverse-engineer the purpose.
-  def apply_pygments_prefix_and_suffix(text)
-    # Remember: nil.to_s => ""
-    context['pygments_prefix'].to_s + text + context['pygments_suffix'].to_s
+    def surround_with(text, prefix, suffix)
+      # Remember: nil.to_s => ""
+      prefix.to_s + text + suffix.to_s
+    end
+
+    # Provide an intention-revealing name for a method I dare not rename yet
+    def treat_as_raw_text(html)
+      safe_wrap(html)
+    end
+
+    # Something to do with making pygments work with textile. I couldn't reverse-engineer the purpose.
+    # SMELL I don't like having to pass the 'context' here; I shouldn't care where to get the prefix and suffix.
+    def apply_pygments_prefix_and_suffix(context, text)
+      # Remember: nil.to_s => ""
+      context['pygments_prefix'].to_s + text + context['pygments_suffix'].to_s
+    end
   end
 end
 
