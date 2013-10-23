@@ -120,7 +120,11 @@ module Jekyll
       end
       apply_pygments_prefix_and_suffix(context,
         treat_as_raw_text(
-          surround_with(source, "<figure class='code'>", "</figure>")))
+          enclose_in_code_figure(source)))
+    end
+
+    def enclose_in_code_figure(html)
+      surround_with(html, "<figure class='code'>", "</figure>")
     end
 
     def surround_with(text, prefix, suffix)
