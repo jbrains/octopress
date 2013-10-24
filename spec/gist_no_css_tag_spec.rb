@@ -2,13 +2,6 @@ require "rspec"
 
 describe "gist_no_css tag" do
   context "the pieces" do
-    context "rendering code" do
-      # Assume we've already successfully downloaded code
-      example "gist ID, username and filename"
-      example "gist ID and filename"
-      example "gist ID and username"
-      example "gist ID"
-    end
 
     context "downloading gist code" do
       context "gist found" do
@@ -66,8 +59,8 @@ describe "gist_no_css tag" do
       end
 
       example "happy path" do
-        renders_code = mock("I render the code")
-        downloads_gist = mock("I download the gist", download: "::downloaded code::")
+        renders_code = double("I render the code")
+        downloads_gist = double("I download the gist", download: "::downloaded code::")
 
         renders_code.should_receive(:render).with("::downloaded code::").and_return("::rendered code::")
 
@@ -76,6 +69,52 @@ describe "gist_no_css tag" do
 
       example "failure rendering code"
       example "failure downloading gist"
+    end
+  end
+
+  context "integrating the pieces with other Octopress plugins" do
+    require "jekyll" # only because the CodeBlock plugin doesn't do this
+    require "plugins/code_block"
+
+    context "rendering code with CodeBlock" do
+      class RendersCodeUsingOctopressCodeBlock
+        def initialize(octopress_code_block_class, liquid_context)
+          @octopress_code_block_class = octopress_code_block_class
+          @liquid_context = liquid_context
+        end
+
+        # options: username, filename
+        def render(gist_id, options)
+          parameters_as_text = "#{options[:filename]} https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{options[:filename]}"
+          irrelevant_tokens = []
+          code_block_tag = @octopress_code_block_class.new("irrelevant tag name", parameters_as_text, irrelevant_tokens)
+          code_block_tag.render(@liquid_context)
+        end
+      end
+
+      # Assume we've already successfully downloaded code
+      example "gist ID, username and filename" do
+        # I'd rather mock a class to instantiate a mock instance (for now) than integrate with the real Octopress tag implementation
+        # It might be better to use the real thing, but just mock render()
+        code_block = double("code block")
+        code_block_class = double("code block factory")
+
+        code_block_class.should_receive(:new) { | _, parameters_as_text, _ |
+          # CodeBlock needs to have filename, then URL
+          parameters_as_text.strip.should =~ %r{#{Regexp.escape("file.rb")}\s+#{Regexp.escape("https://gist.github.com/jbrains/1234/raw/file.rb")}}
+        }.and_return(code_block)
+
+        irrelevant_context = double("a Liquid context").as_null_object
+
+        code_block.should_receive(:render).with(irrelevant_context)
+
+        renders_code = RendersCodeUsingOctopressCodeBlock.new(code_block_class, irrelevant_context)
+        renders_code.render("1234", username: "jbrains", filename: "file.rb")
+      end
+
+      example "gist ID and filename"
+      example "gist ID and username"
+      example "gist ID"
     end
   end
 
