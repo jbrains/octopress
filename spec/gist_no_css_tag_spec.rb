@@ -47,14 +47,45 @@ describe "gist_no_css tag" do
     end
   end
 
+  context "putting the pieces together" do
+    describe "render()" do
+      class GistNoCssTag
+        def initialize(renders_code, downloads_gist)
+          @renders_code = renders_code
+          @downloads_gist = downloads_gist
+        end
+
+        def self.with(collaborators_as_hash)
+          self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
+        end
+
+        # SMELL This method doesn't yet say what it's downloading to render!
+        def render()
+          @renders_code.render(@downloads_gist.download())
+        end
+      end
+
+      example "happy path" do
+        renders_code = mock("I render the code")
+        downloads_gist = mock("I download the gist", download: "::downloaded code::")
+
+        renders_code.should_receive(:render).with("::downloaded code::").and_return("::rendered code::")
+
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should == "::rendered code::"
+      end
+
+      example "failure rendering code"
+      example "failure downloading gist"
+    end
+  end
+
   context "integrating the pieces into the Liquid extension point" do
     it "should be a Liquid tag"
     it "should register itself in Liquid"
 
     describe "render()" do
       example "happy path"
-      example "failure rendering code"
-      example "failure downloading gist"
+      example "failure in rendering abstract tag"
     end
 
     describe "initialize()" do
