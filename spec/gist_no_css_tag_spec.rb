@@ -37,13 +37,6 @@ describe "gist_no_css tag" do
                 # options: username, filename
                 def download(gist_id, options)
                   filename_portion = "#{options[:filename]}" if options[:filename]
-                  Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}").body
-                end
-              end
-              class DownloadsGistUsingFaraday
-                # options: username, filename
-                def download(gist_id, options)
-                  filename_portion = "#{options[:filename]}" if options[:filename]
                   response = Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
                   return response.body unless (400..599).include?(response.status.to_i)
                   raise RuntimeError.new(response.inspect.to_s)
