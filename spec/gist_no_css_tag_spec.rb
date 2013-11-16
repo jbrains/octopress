@@ -34,34 +34,35 @@ describe "gist_no_css tag" do
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              response = HTTParty.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
-              # SMELL Switch this from HTTParty to faraday, because @peeja said so
-              class DownloadsGistUsingHTTParty
+              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
+
+              class DownloadsGistUsingFaraday
                 # options: username, filename
                 def download(gist_id, options)
                   filename_portion = "#{options[:filename]}" if options[:filename]
-                  HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}").body
+                  Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}").body
                 end
               end
-              DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
+
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
             end
           end
 
           example "filename does not match" do
             VCR.use_cassette("gist_exists_with_single_file", record: :new_episodes) do
-              response = HTTParty.get("https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java")
-              # SMELL Switch this from HTTParty to faraday, because @peeja said so
-              class DownloadsGistUsingHTTParty
+              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java")
+              # SMELL Switch this from Faraday to faraday, because @peeja said so
+              class DownloadsGistUsingFaraday
                 # options: username, filename
                 def download(gist_id, options)
                   filename_portion = "#{options[:filename]}" if options[:filename]
-                  response = HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
+                  response = Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
                   return response.body unless (400..599).include?(response.code.to_i)
                   raise RuntimeError.new(response.inspect.to_s)
                 end
               end
               lambda {
-                DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TheWrongFilename.java")
+                DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TheWrongFilename.java")
               }.should raise_error()
             end
           end

@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Sat, 16 Nov 2013 19:17:00 GMT
+      - Sat, 16 Nov 2013 19:22:27 GMT
       Content-Type:
       - text/plain; charset=utf-8
       Transfer-Encoding:
@@ -47,13 +47,13 @@ http_interactions:
       Content-Transfer-Encoding:
       - binary
       X-Served-By:
-      - github-fe102-cp1-prd.iad.github.net
+      - github-fe103-cp1-prd.iad.github.net
       Cache-Control:
       - private
       X-Request-Id:
-      - 1f006caf-ea88-41db-a800-989ebb133cb5
+      - cd20ca1a-b057-4efa-8a93-26aab40e3b04
       X-Runtime:
-      - '0.012092'
+      - '0.018804'
       Vary:
       - Accept-Encoding
     body:
@@ -81,7 +81,7 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:17:00 GMT
+  recorded_at: Sat, 16 Nov 2013 19:22:27 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
@@ -103,7 +103,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Sat, 16 Nov 2013 19:17:01 GMT
+      - Sat, 16 Nov 2013 19:22:28 GMT
       Content-Type:
       - text/plain; charset=utf-8
       Transfer-Encoding:
@@ -133,9 +133,9 @@ http_interactions:
       Cache-Control:
       - private
       X-Request-Id:
-      - 79f8e07c-b726-4616-9ac1-d80be8461467
+      - b8cf590d-24bb-4a83-b8dc-f6e919b619e7
       X-Runtime:
-      - '0.010671'
+      - '0.011086'
       Vary:
       - Accept-Encoding
     body:
@@ -163,14 +163,20 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:17:01 GMT
+  recorded_at: Sat, 16 Nov 2013 19:22:28 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java
     body:
       encoding: US-ASCII
       string: ''
-    headers: {}
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
   response:
     status:
       code: 404
@@ -179,7 +185,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Sat, 16 Nov 2013 19:17:01 GMT
+      - Sat, 16 Nov 2013 19:22:28 GMT
       Content-Type:
       - text/html; charset=utf-8
       Transfer-Encoding:
@@ -189,7 +195,7 @@ http_interactions:
       Strict-Transport-Security:
       - max-age=31536000
       X-Frame-Options:
-      - DENY
+      - SAMEORIGIN
       X-Xss-Protection:
       - 1; mode=block
       X-Content-Type-Options:
@@ -201,18 +207,106 @@ http_interactions:
       Cache-Control:
       - no-cache
       Set-Cookie:
-      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJWE0ODMzMjc5MmMyNWFmZjExZDhiNzRlNWMwNmEwODhhBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMWFGSHVBYmU1S1FaREYwMXA4MExUV2VranI5TENvMSt1UTE0VEJBZllmUFk9BjsARg%3D%3D--e4606469eda3f1b300225ed2aad377ebc216b404;
+      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJWI4NzgxMjBhYWM4Zjg1NjkxZDY5Y2U4MDczOTRjY2Q3BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMVVONnVXMVhBUnFTSk1oR3NkRjNZN3J6UHhDbXB4MmJxNGtTdFYyeXdRQ0U9BjsARg%3D%3D--b10f0dd6c45f2a519596c2ee67400df73644aafb;
         path=/; secure; HttpOnly
       X-Request-Id:
-      - 31eeb1d1-b45e-4ec2-ae02-e016fa1446c9
+      - 42bdccf3-1b7b-40cc-bfdf-a70582dfd2f5
       X-Runtime:
-      - '0.013756'
+      - '0.015527'
     body:
       encoding: UTF-8
       string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
         githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
         http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
-        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"aFHuAbe5KQZDF01p80LTWekjr9LCo1+uQ14TBAfYfPY=\"
+        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"UN6uW1XARqSJMhGsdF3Y7rzPxCmpx2bq4kStV2ywQCE=\"
+        name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
+        \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
+        />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
+        name=\"octolytics-host\" /><meta content=\"collector-cdn.github.com\" name=\"octolytics-script-host\"
+        />\n\n  <link href=\"/assets/application-40431a953a4fe71f7abb47ce95f23da2.css\"
+        media=\"screen, print\" rel=\"stylesheet\" />\n  <script src=\"/assets/application-ef934eddf8f7b5930eb6630337249c2d.js\"></script>\n\n
+        \ \n</head>\n\n<body class=\" \">\n\n  <div id=\"wrapper\">\n    \n\n    <div
+        id=\"header\" class=\"header header-logged-out\">\n      <div class=\"container\"
+        class=\"clearfix\">\n        <a class=\"header-logo-wordmark\" href=\"https://gist.github.com/\">\n
+        \         <span class=\"octicon octicon-logo-github\"></span>\n          <span
+        class=\"octicon-logo octicon-logo-gist\"></span>\n        </a>\n\n        <div
+        class=\"header-actions\">\n          <a class=\"button primary\" href=\"https://github.com/signup?return_to=gist\">Sign
+        up for a GitHub Account</a>\n          <a class=\"button\" href=\"https://gist.github.com/login?return_to=/jbrains/4111662/raw/TheWrongFilename.java\"
+        data-skip-pjax>Sign in</a>\n        </div>\n      </div>\n    </div>\n\n    <div
+        class=\"site-content\" id=\"js-pjax-container\" data-pjax-container>\n      <div
+        class=\" site-container js-site-container\" data-url=\"/jbrains/4111662/raw/TheWrongFilename.java\">\n
+        \ \n  <div class=\"i-am-error container\">\n  <h1>Whoops.</h1>\n  <p>We seem
+        to have missed the <em>gist</em> of that <em>gist</em> you were looking for.</p>\n</div>\n\n
+        \ <div class=\"context-overlay\"></div>\n</div>\n\n    </div>\n    <div class=\"slow-loading-overlay\"></div>\n
+        \ </div>\n\n  <div id=\"ajax-error-message\" class=\"flash flash-error\">\n
+        \   <div class=\"container\">\n      <span class=\"octicon octicon-alert\"></span>\n
+        \     Something went wrong with that request. Please try again.\n      <a
+        href=\"#\" class=\"octicon octicon-remove-close ajax-error-dismiss\"></a>\n
+        \   </div>\n  </div>\n\n  <footer>\n    <div id=\"footer\">\n  <div class=\"container
+        clearfix\">\n\n    <!-- Served fresh by github-fe103-cp1-prd.iad.github.net
+        -->\n    <p class=\"right\">&copy; 2013 GitHub Inc. All rights reserved.</p>\n
+        \   <a class=\"left\" href=\"/\">\n      <span class=\"mega-octicon octicon-mark-github\"></span>\n
+        \   </a>\n    <ul id=\"legal\">\n      <li><a href=\"https://github.com/blog\">The
+        GitHub Blog</a></li>\n      <li><a href=\"mailto:support@github.com\">Support</a></li>\n
+        \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
+        \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
+    http_version: 
+  recorded_at: Sat, 16 Nov 2013 19:22:29 GMT
+- request:
+    method: get
+    uri: https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Sat, 16 Nov 2013 19:22:29 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 404 Not Found
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Ua-Compatible:
+      - chrome=1
+      Access-Control-Allow-Origin:
+      - https://render.github.com
+      Cache-Control:
+      - no-cache
+      Set-Cookie:
+      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTMxZmFhOGM2MTU3YWFlYzQ2OGI2ZDJkZjQ4NWRhYzEwBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMXp5WU8wZEozRFFSeW1sbDhJaVJDYkp6NEg4eHBzUGFLemZ5VXlBd0d1OWM9BjsARg%3D%3D--c120409f7de575e99e522d27da0a557db0ccd576;
+        path=/; secure; HttpOnly
+      X-Request-Id:
+      - 1383fa29-7897-4ee1-a4fb-e9637b55e8e7
+      X-Runtime:
+      - '0.011032'
+    body:
+      encoding: UTF-8
+      string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
+        githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
+        http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
+        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"zyYO0dJ3DQRymll8IiRCbJz4H8xpsPaKzfyUyAwGu9c=\"
         name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
         \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
         />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
@@ -245,87 +339,5 @@ http_interactions:
         \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
         \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:17:01 GMT
-- request:
-    method: get
-    uri: https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers: {}
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Sat, 16 Nov 2013 19:17:02 GMT
-      Content-Type:
-      - text/html; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Status:
-      - 404 Not Found
-      Strict-Transport-Security:
-      - max-age=31536000
-      X-Frame-Options:
-      - DENY
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
-      X-Ua-Compatible:
-      - chrome=1
-      Access-Control-Allow-Origin:
-      - https://render.github.com
-      Cache-Control:
-      - no-cache
-      Set-Cookie:
-      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTI1YjZiZmFmNjU0ODIxNGJmZGRjNTJmY2NhZTgzYWQ4BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMTNwd2J2U3QxbFphZWh5TGZoQWcxUjFRMzR4WWFRVEhlaXQyZ1VaSzRFUVk9BjsARg%3D%3D--96c56414438bef980cc26b60d5ea0b709e6d591d;
-        path=/; secure; HttpOnly
-      X-Request-Id:
-      - fb8e66cc-20d7-47f0-8668-484a8b187f86
-      X-Runtime:
-      - '0.036627'
-    body:
-      encoding: UTF-8
-      string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
-        githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
-        http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
-        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"3pwbvSt1lZaehyLfhAg1R1Q34xYaQTHeit2gUZK4EQY=\"
-        name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
-        \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
-        />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
-        name=\"octolytics-host\" /><meta content=\"collector-cdn.github.com\" name=\"octolytics-script-host\"
-        />\n\n  <link href=\"/assets/application-40431a953a4fe71f7abb47ce95f23da2.css\"
-        media=\"screen, print\" rel=\"stylesheet\" />\n  <script src=\"/assets/application-ef934eddf8f7b5930eb6630337249c2d.js\"></script>\n\n
-        \ \n</head>\n\n<body class=\" \">\n\n  <div id=\"wrapper\">\n    \n\n    <div
-        id=\"header\" class=\"header header-logged-out\">\n      <div class=\"container\"
-        class=\"clearfix\">\n        <a class=\"header-logo-wordmark\" href=\"https://gist.github.com/\">\n
-        \         <span class=\"octicon octicon-logo-github\"></span>\n          <span
-        class=\"octicon-logo octicon-logo-gist\"></span>\n        </a>\n\n        <div
-        class=\"header-actions\">\n          <a class=\"button primary\" href=\"https://github.com/signup?return_to=gist\">Sign
-        up for a GitHub Account</a>\n          <a class=\"button\" href=\"https://gist.github.com/login?return_to=/jbrains/4111662/raw/TheWrongFilename.java\"
-        data-skip-pjax>Sign in</a>\n        </div>\n      </div>\n    </div>\n\n    <div
-        class=\"site-content\" id=\"js-pjax-container\" data-pjax-container>\n      <div
-        class=\" site-container js-site-container\" data-url=\"/jbrains/4111662/raw/TheWrongFilename.java\">\n
-        \ \n  <div class=\"i-am-error container\">\n  <h1>Whoops.</h1>\n  <p>We seem
-        to have missed the <em>gist</em> of that <em>gist</em> you were looking for.</p>\n</div>\n\n
-        \ <div class=\"context-overlay\"></div>\n</div>\n\n    </div>\n    <div class=\"slow-loading-overlay\"></div>\n
-        \ </div>\n\n  <div id=\"ajax-error-message\" class=\"flash flash-error\">\n
-        \   <div class=\"container\">\n      <span class=\"octicon octicon-alert\"></span>\n
-        \     Something went wrong with that request. Please try again.\n      <a
-        href=\"#\" class=\"octicon octicon-remove-close ajax-error-dismiss\"></a>\n
-        \   </div>\n  </div>\n\n  <footer>\n    <div id=\"footer\">\n  <div class=\"container
-        clearfix\">\n\n    <!-- Served fresh by github-fe102-cp1-prd.iad.github.net
-        -->\n    <p class=\"right\">&copy; 2013 GitHub Inc. All rights reserved.</p>\n
-        \   <a class=\"left\" href=\"/\">\n      <span class=\"mega-octicon octicon-mark-github\"></span>\n
-        \   </a>\n    <ul id=\"legal\">\n      <li><a href=\"https://github.com/blog\">The
-        GitHub Blog</a></li>\n      <li><a href=\"mailto:support@github.com\">Support</a></li>\n
-        \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
-        \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
-    http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:17:02 GMT
+  recorded_at: Sat, 16 Nov 2013 19:22:29 GMT
 recorded_with: VCR 2.7.0
