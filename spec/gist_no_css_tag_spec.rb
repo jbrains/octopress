@@ -80,7 +80,15 @@ describe "gist_no_css tag" do
         GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should =~ /<!--.+I failed to render the code.+-->/m
       end
 
-      example "failure downloading gist"
+      example "failure downloading gist" do
+        renders_code = double("I render the code")
+        downloads_gist = double("I download the gist")
+
+        downloads_gist.stub(:download).and_raise("I failed to download the gist")
+        renders_code.should_not_receive(:render)
+
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should =~ /<!--.+I failed to download the gist.+-->/m
+      end
     end
   end
 
