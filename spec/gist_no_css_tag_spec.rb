@@ -54,6 +54,11 @@ describe "gist_no_css tag" do
         # SMELL This method doesn't yet say what it's downloading to render!
         def render()
           @renders_code.render(@downloads_gist.download())
+        rescue => oops
+          # SMELL I think I just shit in my own throat
+          canvas = StringIO.new
+          canvas.puts "<!--", oops.message, oops.backtrace, "-->"
+          canvas.string
         end
       end
 
@@ -66,7 +71,15 @@ describe "gist_no_css tag" do
         GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should == "::rendered code::"
       end
 
-      example "failure rendering code"
+      example "failure rendering code" do
+        renders_code = double("I render the code")
+        downloads_gist = double("I download the gist", download: "::downloaded code::")
+
+        renders_code.stub(:render).and_raise("I failed to render the code")
+
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should =~ /<!--.+I failed to render the code.+-->/m
+      end
+
       example "failure downloading gist"
     end
   end
