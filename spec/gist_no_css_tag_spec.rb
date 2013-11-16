@@ -36,8 +36,8 @@ describe "gist_no_css tag" do
               class DownloadsGistUsingHTTParty
                 # options: username, filename
                 def download(gist_id, options)
-                  filename_portion = "/#{options[:filename]}" if options[:filename]
-                  HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}").body
+                  filename_portion = "#{options[:filename]}" if options[:filename]
+                  HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}").body
                 end
               end
               DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
