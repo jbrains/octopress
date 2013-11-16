@@ -62,6 +62,7 @@ describe "gist_no_css tag" do
               }.should raise_error()
             end
           end
+          example "github throws me a redirect", future: true
         end
         context "gist has many files" do
           context "filename specified" do
