@@ -43,7 +43,25 @@ describe "gist_no_css tag" do
               DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
             end
           end
-          example "filename does not match"
+
+          example "filename does not match" do
+            VCR.use_cassette("gist_exists_with_single_file", record: :new_episodes) do
+              response = HTTParty.get("https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java")
+              # SMELL Switch this from HTTParty to faraday, because @peeja said so
+              class DownloadsGistUsingHTTParty
+                # options: username, filename
+                def download(gist_id, options)
+                  filename_portion = "#{options[:filename]}" if options[:filename]
+                  response = HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
+                  return response.body if response.code == 200
+                  raise RuntimeError.new(response.inspect.to_s)
+                end
+              end
+              lambda {
+                DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TheWrongFilename.java")
+              }.should raise_error()
+            end
+          end
         end
         context "gist has many files" do
           context "filename specified" do
