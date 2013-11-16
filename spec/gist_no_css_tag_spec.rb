@@ -3,8 +3,8 @@ require "rspec"
 describe "gist_no_css tag" do
   context "the pieces" do
     context "downloading gist code" do
-      # The thing that downloads the gist code. HTTParty, I guess?
       require "vcr"
+      require "faraday"
 
       VCR.configure do |c|
         c.cassette_library_dir = 'fixtures/downloading_gists'
@@ -15,7 +15,6 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              require "faraday"
 
               response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
 
