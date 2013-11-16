@@ -17,7 +17,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sat, 16 Nov 2013 19:40:49 GMT
+      - Sat, 16 Nov 2013 20:00:02 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -49,9 +49,9 @@ http_interactions:
       cache-control:
       - private
       x-request-id:
-      - cc0eb90f-d1c1-402b-8766-b465260c7e62
+      - 69a21d6b-9bcb-4436-9893-45de7d5eb162
       x-runtime:
-      - '0.013534'
+      - '0.048882'
       vary:
       - Accept-Encoding
     body:
@@ -79,7 +79,7 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:40:49 GMT
+  recorded_at: Sat, 16 Nov 2013 20:00:02 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
@@ -97,7 +97,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sat, 16 Nov 2013 19:40:49 GMT
+      - Sat, 16 Nov 2013 20:00:03 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -129,9 +129,9 @@ http_interactions:
       cache-control:
       - private
       x-request-id:
-      - 77a59341-031e-4fbc-a714-0bd215d11373
+      - b8e95b12-4b9e-4461-b3da-0e1fca216ec1
       x-runtime:
-      - '0.011160'
+      - '0.049170'
       vary:
       - Accept-Encoding
     body:
@@ -159,5 +159,5 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:40:49 GMT
+  recorded_at: Sat, 16 Nov 2013 20:00:03 GMT
 recorded_with: VCR 2.7.0

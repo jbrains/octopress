@@ -45,14 +45,12 @@ describe "gist_no_css tag" do
                 def download(gist_id, options)
                   filename_portion = "#{options[:filename]}" if options[:filename]
                   response = Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
-                  return response.body unless (400..599).include?(response.code.to_i)
+                  return response.body unless (400..599).include?(response.status.to_i)
                   raise RuntimeError.new(response.inspect.to_s)
                 end
               end
 
-              pending "This looks like a mistake in VCR so far" do
-                DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
-              end
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
             end
           end
 
@@ -64,7 +62,7 @@ describe "gist_no_css tag" do
                 def download(gist_id, options)
                   filename_portion = "#{options[:filename]}" if options[:filename]
                   response = Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}")
-                  return response.body unless (400..599).include?(response.code.to_i)
+                  return response.body unless (400..599).include?(response.status.to_i)
                   raise RuntimeError.new(response.inspect.to_s)
                 end
               end
