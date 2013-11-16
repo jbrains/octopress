@@ -1,8 +1,18 @@
 require "rspec"
 
 describe "gist_no_css tag" do
-  context "the pieces", future: true do
+  context "the pieces" do
     context "downloading gist code" do
+      # The thing that downloads the gist code. HTTParty, I guess?
+      require "webmock/rspec"
+      require "vcr"
+      require "httparty"
+
+      VCR.configure do |c|
+        c.cassette_library_dir = 'fixtures/downloading_gists'
+        c.hook_into :webmock
+      end
+
       context "gist found" do
         context "gist has only one file" do
           example "filename specified"
@@ -22,7 +32,7 @@ describe "gist_no_css tag" do
       example "failure downloading gist"
     end
 
-    context "parsing tag parameters" do
+    context "parsing tag parameters", future: true do
       example "all parameters specified" do
         pending
         # Remember to call the codeblock with filename, then URL
@@ -55,10 +65,7 @@ describe "gist_no_css tag" do
         def render()
           @renders_code.render(@downloads_gist.download())
         rescue => oops
-          # SMELL I think I just shit in my own throat
-          canvas = StringIO.new
-          canvas.puts "<!--", oops.message, oops.backtrace, "-->"
-          canvas.string
+          StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
         end
       end
 

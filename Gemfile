@@ -19,4 +19,10 @@ group :development do
   gem 'rspec'
 end
 
+group :test do
+  gem 'webmock'
+  gem 'vcr'
+  gem 'httparty'
+end
+
 gem 'sinatra', '~> 1.4.2'
