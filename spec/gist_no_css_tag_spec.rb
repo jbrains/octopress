@@ -17,15 +17,18 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              response = HTTParty.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
-              # SMELL Switch this from HTTParty to faraday, because @peeja said so
-              class DownloadsGistUsingHTTParty
+              require "faraday"
+
+              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
+
+              class DownloadsGistUsingFaraday
                 # options: username, filename
                 def download(gist_id, options)
-                  HTTParty.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{options[:filename]}").body
+                  Faraday.get("https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{options[:filename]}").body
                 end
               end
-              DownloadsGistUsingHTTParty.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
+
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
             end
           end
 

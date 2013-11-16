@@ -23,6 +23,7 @@ group :test do
   gem 'webmock'
   gem 'vcr'
   gem 'httparty'
+  gem 'faraday'
 end
 
 gem 'sinatra', '~> 1.4.2'
