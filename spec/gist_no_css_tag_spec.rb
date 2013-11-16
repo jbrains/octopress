@@ -1,8 +1,7 @@
 require "rspec"
 
 describe "gist_no_css tag" do
-  context "the pieces" do
-
+  context "the pieces", future: true do
     context "downloading gist code" do
       context "gist found" do
         context "gist has only one file" do
@@ -118,7 +117,7 @@ describe "gist_no_css tag" do
     end
   end
 
-  context "integrating the pieces into the Liquid extension point" do
+  context "integrating the pieces into the Liquid extension point", future: true do
     it "should be a Liquid tag"
     it "should register itself in Liquid"
 
