@@ -4,13 +4,11 @@ describe "gist_no_css tag" do
   context "the pieces" do
     context "downloading gist code" do
       # The thing that downloads the gist code. HTTParty, I guess?
-      require "webmock/rspec"
       require "vcr"
-      require "httparty"
 
       VCR.configure do |c|
         c.cassette_library_dir = 'fixtures/downloading_gists'
-        c.hook_into :webmock
+        c.hook_into :faraday
       end
 
       context "gist found" do
@@ -51,7 +49,6 @@ describe "gist_no_css tag" do
           example "filename does not match" do
             VCR.use_cassette("gist_exists_with_single_file", record: :new_episodes) do
               response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java")
-              # SMELL Switch this from Faraday to faraday, because @peeja said so
               class DownloadsGistUsingFaraday
                 # options: username, filename
                 def download(gist_id, options)

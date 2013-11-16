@@ -20,9 +20,7 @@ group :development do
 end
 
 group :test do
-  gem 'webmock'
   gem 'vcr'
-  gem 'httparty'
   gem 'faraday'
 end
 

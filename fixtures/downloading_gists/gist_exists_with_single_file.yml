@@ -9,52 +9,50 @@ http_interactions:
     headers:
       User-Agent:
       - Faraday v0.8.8
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - '*/*'
   response:
     status:
       code: 200
-      message: OK
+      message: 
     headers:
-      Server:
+      server:
       - GitHub.com
-      Date:
-      - Sat, 16 Nov 2013 19:22:27 GMT
-      Content-Type:
+      date:
+      - Sat, 16 Nov 2013 19:24:32 GMT
+      content-type:
       - text/plain; charset=utf-8
-      Transfer-Encoding:
+      transfer-encoding:
       - chunked
-      Status:
+      connection:
+      - close
+      status:
       - 200 OK
-      Strict-Transport-Security:
+      strict-transport-security:
       - max-age=31536000
-      X-Frame-Options:
+      x-frame-options:
       - SAMEORIGIN
-      X-Xss-Protection:
+      x-xss-protection:
       - 1; mode=block
-      X-Content-Type-Options:
+      x-content-type-options:
       - nosniff
-      X-Ua-Compatible:
+      x-ua-compatible:
       - chrome=1
-      Access-Control-Allow-Origin:
+      access-control-allow-origin:
       - https://render.github.com
-      Etag:
+      etag:
       - '"93491d36f2231f211142b9006f573e20"'
-      Content-Disposition:
+      content-disposition:
       - inline
-      Content-Transfer-Encoding:
+      content-transfer-encoding:
       - binary
-      X-Served-By:
+      x-served-by:
       - github-fe103-cp1-prd.iad.github.net
-      Cache-Control:
+      cache-control:
       - private
-      X-Request-Id:
-      - cd20ca1a-b057-4efa-8a93-26aab40e3b04
-      X-Runtime:
-      - '0.018804'
-      Vary:
+      x-request-id:
+      - dbff7ab9-9e9d-48e5-9b93-5a97ca13e988
+      x-runtime:
+      - '0.012633'
+      vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
@@ -81,7 +79,7 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:22:27 GMT
+  recorded_at: Sat, 16 Nov 2013 19:24:32 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
@@ -91,52 +89,50 @@ http_interactions:
     headers:
       User-Agent:
       - Faraday v0.8.8
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - '*/*'
   response:
     status:
       code: 200
-      message: OK
+      message: 
     headers:
-      Server:
+      server:
       - GitHub.com
-      Date:
-      - Sat, 16 Nov 2013 19:22:28 GMT
-      Content-Type:
+      date:
+      - Sat, 16 Nov 2013 19:24:32 GMT
+      content-type:
       - text/plain; charset=utf-8
-      Transfer-Encoding:
+      transfer-encoding:
       - chunked
-      Status:
+      connection:
+      - close
+      status:
       - 200 OK
-      Strict-Transport-Security:
+      strict-transport-security:
       - max-age=31536000
-      X-Frame-Options:
+      x-frame-options:
       - SAMEORIGIN
-      X-Xss-Protection:
+      x-xss-protection:
       - 1; mode=block
-      X-Content-Type-Options:
+      x-content-type-options:
       - nosniff
-      X-Ua-Compatible:
+      x-ua-compatible:
       - chrome=1
-      Access-Control-Allow-Origin:
+      access-control-allow-origin:
       - https://render.github.com
-      Etag:
+      etag:
       - '"93491d36f2231f211142b9006f573e20"'
-      Content-Disposition:
+      content-disposition:
       - inline
-      Content-Transfer-Encoding:
+      content-transfer-encoding:
       - binary
-      X-Served-By:
+      x-served-by:
       - github-fe102-cp1-prd.iad.github.net
-      Cache-Control:
+      cache-control:
       - private
-      X-Request-Id:
-      - b8cf590d-24bb-4a83-b8dc-f6e919b619e7
-      X-Runtime:
-      - '0.011086'
-      Vary:
+      x-request-id:
+      - 928beef6-71a2-4410-89af-3bba8d4f01d6
+      x-runtime:
+      - '0.011036'
+      vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
@@ -163,7 +159,7 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:22:28 GMT
+  recorded_at: Sat, 16 Nov 2013 19:24:33 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java
@@ -173,52 +169,50 @@ http_interactions:
     headers:
       User-Agent:
       - Faraday v0.8.8
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - '*/*'
   response:
     status:
       code: 404
-      message: Not Found
+      message: 
     headers:
-      Server:
+      server:
       - GitHub.com
-      Date:
-      - Sat, 16 Nov 2013 19:22:28 GMT
-      Content-Type:
+      date:
+      - Sat, 16 Nov 2013 19:24:33 GMT
+      content-type:
       - text/html; charset=utf-8
-      Transfer-Encoding:
+      transfer-encoding:
       - chunked
-      Status:
+      connection:
+      - close
+      status:
       - 404 Not Found
-      Strict-Transport-Security:
+      strict-transport-security:
       - max-age=31536000
-      X-Frame-Options:
+      x-frame-options:
       - SAMEORIGIN
-      X-Xss-Protection:
+      x-xss-protection:
       - 1; mode=block
-      X-Content-Type-Options:
+      x-content-type-options:
       - nosniff
-      X-Ua-Compatible:
+      x-ua-compatible:
       - chrome=1
-      Access-Control-Allow-Origin:
+      access-control-allow-origin:
       - https://render.github.com
-      Cache-Control:
+      cache-control:
       - no-cache
-      Set-Cookie:
-      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJWI4NzgxMjBhYWM4Zjg1NjkxZDY5Y2U4MDczOTRjY2Q3BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMVVONnVXMVhBUnFTSk1oR3NkRjNZN3J6UHhDbXB4MmJxNGtTdFYyeXdRQ0U9BjsARg%3D%3D--b10f0dd6c45f2a519596c2ee67400df73644aafb;
+      set-cookie:
+      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTAzYmE3MGM2Mjk1NmE3YjgyODRmNDYxZDQ2M2MxNDU4BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMWRNb1hRSTFxS0d4YkEyT0ZjVTMrSllWdGt6QzRRci9iRlp1eGhaNlphY289BjsARg%3D%3D--07e180af1e951c149738ac886261247ceaf83022;
         path=/; secure; HttpOnly
-      X-Request-Id:
-      - 42bdccf3-1b7b-40cc-bfdf-a70582dfd2f5
-      X-Runtime:
-      - '0.015527'
+      x-request-id:
+      - e7010530-c31e-4aa0-844c-3fe4aa6ecf65
+      x-runtime:
+      - '0.012412'
     body:
       encoding: UTF-8
       string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
         githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
         http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
-        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"UN6uW1XARqSJMhGsdF3Y7rzPxCmpx2bq4kStV2ywQCE=\"
+        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"dMoXQI1qKGxbA2OFcU3+JYVtkzC4Qr/bFZuxhZ6Zaco=\"
         name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
         \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
         />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
@@ -251,7 +245,7 @@ http_interactions:
         \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
         \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:22:29 GMT
+  recorded_at: Sat, 16 Nov 2013 19:24:33 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java
@@ -261,52 +255,50 @@ http_interactions:
     headers:
       User-Agent:
       - Faraday v0.8.8
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - '*/*'
   response:
     status:
       code: 404
-      message: Not Found
+      message: 
     headers:
-      Server:
+      server:
       - GitHub.com
-      Date:
-      - Sat, 16 Nov 2013 19:22:29 GMT
-      Content-Type:
+      date:
+      - Sat, 16 Nov 2013 19:24:34 GMT
+      content-type:
       - text/html; charset=utf-8
-      Transfer-Encoding:
+      transfer-encoding:
       - chunked
-      Status:
+      connection:
+      - close
+      status:
       - 404 Not Found
-      Strict-Transport-Security:
+      strict-transport-security:
       - max-age=31536000
-      X-Frame-Options:
+      x-frame-options:
       - SAMEORIGIN
-      X-Xss-Protection:
+      x-xss-protection:
       - 1; mode=block
-      X-Content-Type-Options:
+      x-content-type-options:
       - nosniff
-      X-Ua-Compatible:
+      x-ua-compatible:
       - chrome=1
-      Access-Control-Allow-Origin:
+      access-control-allow-origin:
       - https://render.github.com
-      Cache-Control:
+      cache-control:
       - no-cache
-      Set-Cookie:
-      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTMxZmFhOGM2MTU3YWFlYzQ2OGI2ZDJkZjQ4NWRhYzEwBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMXp5WU8wZEozRFFSeW1sbDhJaVJDYkp6NEg4eHBzUGFLemZ5VXlBd0d1OWM9BjsARg%3D%3D--c120409f7de575e99e522d27da0a557db0ccd576;
+      set-cookie:
+      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJWQ3ODdhMmRjMmZhZTUwY2ZlYmFjZDA3MzI3ZmVkNmQ0BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMVlsN0hNckVxU25WQ28zNDlUNGcramhsUmpnSXh1OWVvelp3UHhabkFlVFU9BjsARg%3D%3D--7efa152a0256fa85a3686695b60ffae050ce9a1c;
         path=/; secure; HttpOnly
-      X-Request-Id:
-      - 1383fa29-7897-4ee1-a4fb-e9637b55e8e7
-      X-Runtime:
-      - '0.011032'
+      x-request-id:
+      - 51a93634-2f10-465e-9fa1-165ea01ea8ee
+      x-runtime:
+      - '0.011516'
     body:
       encoding: UTF-8
       string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
         githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
         http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
-        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"zyYO0dJ3DQRymll8IiRCbJz4H8xpsPaKzfyUyAwGu9c=\"
+        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"Yl7HMrEqSnVCo349T4g+jhlRjgIxu9eozZwPxZnAeTU=\"
         name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
         \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
         />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
@@ -331,7 +323,7 @@ http_interactions:
         \     Something went wrong with that request. Please try again.\n      <a
         href=\"#\" class=\"octicon octicon-remove-close ajax-error-dismiss\"></a>\n
         \   </div>\n  </div>\n\n  <footer>\n    <div id=\"footer\">\n  <div class=\"container
-        clearfix\">\n\n    <!-- Served fresh by github-fe102-cp1-prd.iad.github.net
+        clearfix\">\n\n    <!-- Served fresh by github-fe103-cp1-prd.iad.github.net
         -->\n    <p class=\"right\">&copy; 2013 GitHub Inc. All rights reserved.</p>\n
         \   <a class=\"left\" href=\"/\">\n      <span class=\"mega-octicon octicon-mark-github\"></span>\n
         \   </a>\n    <ul id=\"legal\">\n      <li><a href=\"https://github.com/blog\">The
@@ -339,5 +331,5 @@ http_interactions:
         \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
         \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 19:22:29 GMT
+  recorded_at: Sat, 16 Nov 2013 19:24:34 GMT
 recorded_with: VCR 2.7.0
