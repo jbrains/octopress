@@ -34,7 +34,10 @@ describe "gist_no_css tag" do
 
         # REFACTOR Move this onto a collaborator
         def http_get(base, uri)
-          Faraday.get(base + uri)
+          Faraday.new(base) { | connection |
+            # IMPORTANT Without this line, nothing will happen.
+            connection.adapter Faraday.default_adapter
+          }.get(uri)
         end
       end
 
