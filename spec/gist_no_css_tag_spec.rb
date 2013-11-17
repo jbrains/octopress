@@ -49,12 +49,17 @@ describe "gist_no_css tag" do
         context "gist has many files" do
           context "filename specified" do
             example "matches first file" do
-              VCR.use_cassette("gist_exists_with_many_files") do
+              VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file") do
                 DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
               end
             end
 
-            example "matches other-than-first file"
+            example "matches other-than-first file" do
+              VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file") do
+                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist2.rb").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+              end
+            end
+
             example "filename does not match"
           end
           example "filename not specified"
