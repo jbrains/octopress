@@ -13,7 +13,7 @@ describe "gist_no_css tag" do
 
       class DownloadsGistUsingFaraday
         # options: username, filename
-        def download(gist_id, options)
+        def download(gist_id, options = {})
           filename_portion = "#{options[:filename]}" if options[:filename]
           url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}"
           response = Faraday.get(url)
@@ -84,7 +84,7 @@ describe "gist_no_css tag" do
           VCR.use_cassette("gist_not_found_due_to_wrong_gist_id") do
             # ASSUME No gist will ever have a negative ID.
             lambda {
-              DownloadsGistUsingFaraday.new.download(0, {})
+              DownloadsGistUsingFaraday.new.download(0)
             }.should raise_error()
           end
         end
