@@ -34,10 +34,20 @@ describe "gist_no_css tag" do
 
         # REFACTOR Move this onto a collaborator
         def http_get(base, uri)
+          faraday_with_default_adapter(base) { | connection |
+            connection.use FaradayMiddleware::FollowRedirects, limit: 1
+          }.get(uri)
+        end
+
+        # REFACTOR Move this into Faraday
+        # REFACTOR Rename this something more intention-revealing
+        def faraday_with_default_adapter(base, &block)
           Faraday.new(base) { | connection |
+            yield connection
+
             # IMPORTANT Without this line, nothing will happen.
             connection.adapter Faraday.default_adapter
-          }.get(uri)
+          }
         end
       end
 
@@ -65,15 +75,15 @@ describe "gist_no_css tag" do
 
           example "username not specified, but filename specified" do
             VCR.use_cassette("gist_exists_with_single_file_username_not_specified") do
-              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/raw/4111662/TestingIoFailure.java").body
+              # IMPORTANT The expected result should be the target URL, not the
+              # one through which the username-less shortcut redirects!
+              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "neither username nor filename specified" do
-            pending "This will fail until I can get Faraday to follow redirects correctly" do
-              VCR.use_cassette("gist_exists_with_single_file_username_not_specified_and_filename_not_specified") do
-                DownloadsGistUsingFaraday.new.download(4111662).should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
-              end
+            VCR.use_cassette("gist_exists_with_single_file_username_not_specified_and_filename_not_specified") do
+              DownloadsGistUsingFaraday.new.download(4111662).should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
