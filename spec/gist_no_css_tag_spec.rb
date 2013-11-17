@@ -60,7 +60,13 @@ describe "gist_no_css tag" do
               end
             end
 
-            example "filename does not match"
+            example "filename does not match" do
+              VCR.use_cassette("gist_exists_with_many_files_but_the_wrong_file") do
+                lambda {
+                  DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "SoTotallyNotTheRightFile.java")
+                }.should raise_error()
+              end
+            end
           end
           example "filename not specified"
         end
