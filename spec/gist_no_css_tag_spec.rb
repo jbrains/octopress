@@ -94,6 +94,8 @@ describe "gist_no_css tag" do
         end
 
         context "gist has many files" do
+          let(:name_of_first_file) { "Gist1.java" }
+
           context "filename specified" do
             example "matches first file" do
               VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file") do
@@ -120,13 +122,15 @@ describe "gist_no_css tag" do
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_many_files_but_not_specifying_the_filename") do
-              # SMELL You'll have to look this up to be sure
-              name_of_first_file = "Gist1.java"  
               DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
 
-          example "neither filename nor username specified"
+          example "neither filename nor username specified" do
+            VCR.use_cassette("gist_exists_with_many_files_but_specifying_only_gist_id") do
+              DownloadsGistUsingFaraday.new.download(6964587).should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
+            end
+          end
         end
       end
 
