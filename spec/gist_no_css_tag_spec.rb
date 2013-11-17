@@ -316,7 +316,9 @@ describe "gist_no_css tag" do
       Jekyll::GistNoCssTag.ancestors.should include(Liquid::Tag)
     end
 
-    it "should register itself in Liquid"
+    it "should register itself in Liquid" do
+      Liquid::Template.tags.should include("gist_no_css" => Jekyll::GistNoCssTag)
+    end
 
     describe "render()" do
       example "happy path"
