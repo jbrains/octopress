@@ -10,7 +10,12 @@ module Jekyll
     end
 
     def self.parse_parameters(parameters)
-      match_data = /(?:(.+)\/)?(\d+)(?:\s+([^\s]+))?/.match(parameters)
+      match_data = /^(?:(.+)\/)?(\d+)(?:\s+([^\s]+))?$/.match(parameters)
+      begin
+        Integer(match_data[2])
+      rescue
+        raise ArgumentError.new(parameters)
+      end
       GistNoCssTagParameters.new(match_data[2].to_i, match_data[1], match_data[3])
     end
 

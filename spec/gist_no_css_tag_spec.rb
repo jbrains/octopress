@@ -344,7 +344,22 @@ describe "gist_no_css tag" do
         end
       end
 
+      # Somebody Soap Opera the fuck out of this, will you?
       context "parsing parameters fails" do
+        [
+          "jbrains/ File1.java", 
+          "/1234 File1.java",
+          "/ File1.java",
+          "File1.java",
+          "jbrains File1.java",
+          "jbrains",
+          "",
+          "...",
+        ].each do | bad_parameters_text |
+          example "#{bad_parameters_text} is invalid" do
+            expect { Jekyll::GistNoCssTag.parse_parameters(bad_parameters_text) }.to raise_error(ArgumentError)
+          end
+        end
       end
     end
   end
