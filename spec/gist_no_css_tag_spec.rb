@@ -298,6 +298,14 @@ describe "gist_no_css tag" do
       end
 
       example "initialising fails" do
+        # I'd rather mock a class to instantiate a mock instance (for now) than integrate with the real Octopress tag implementation
+        # It might be better to use the real thing, but just mock render()
+        code_block_class = double("code block factory")
+
+        code_block_class.stub(:new).and_raise("I intentionally failed to initialise the CodeBlock tag")
+
+        renders_code = RendersCodeUsingOctopressCodeBlock.new(code_block_class, irrelevant_context)
+        renders_code.render("::code::", "::filename::", "::pretty (not raw) url::").should =~ /<!--.+I failed to render the code.+I intentionally failed to initialise the CodeBlock tag.+::code::.+-->/m
       end
     end
   end
