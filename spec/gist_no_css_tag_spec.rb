@@ -40,7 +40,6 @@ describe "gist_no_css tag" do
 
           example "filename does not match" do
             VCR.use_cassette("gist_exists_with_single_file_but_the_wrong_file") do
-              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TheWrongFilename.java")
               lambda {
                 DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TheWrongFilename.java")
               }.should raise_error()
