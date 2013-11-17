@@ -310,8 +310,12 @@ describe "gist_no_css tag" do
     end
   end
 
-  context "integrating the pieces into the Liquid extension point", future: true do
-    it "should be a Liquid tag"
+  require "plugins/gist_no_css_tag.rb"
+  context "integrating the pieces into the Liquid extension point" do
+    it "should be a Liquid tag" do
+      Jekyll::GistNoCssTag.ancestors.should include(Liquid::Tag)
+    end
+
     it "should register itself in Liquid"
 
     describe "render()" do
