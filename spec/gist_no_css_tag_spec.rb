@@ -338,6 +338,10 @@ describe "gist_no_css tag" do
         example "omit filename" do
           Jekyll::GistNoCssTag.parse_parameters("jbrains/1234").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", nil)
         end
+
+        example "omit username and filename" do
+          Jekyll::GistNoCssTag.parse_parameters("1234").should == Jekyll::GistNoCssTagParameters.new(1234, nil, nil)
+        end
       end
 
       context "parsing parameters fails" do
