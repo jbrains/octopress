@@ -248,6 +248,8 @@ describe "gist_no_css tag" do
     require "plugins/code_block"
 
     context "rendering code with CodeBlock" do
+      let(:irrelevant_context) { double("a Liquid context").as_null_object }
+
       class RendersCodeUsingOctopressCodeBlock
         def initialize(octopress_code_block_class, liquid_context)
           @octopress_code_block_class = octopress_code_block_class
@@ -259,11 +261,13 @@ describe "gist_no_css tag" do
           irrelevant_tokens = []
           code_block_tag = @octopress_code_block_class.new("irrelevant tag name", parameters_as_text, irrelevant_tokens)
           code_block_tag.render_code(@liquid_context, code)
+        rescue => oops
+          StringIO.new.tap { | canvas | canvas.puts "<!--", "I failed to render the code", oops.message, oops.backtrace, "title: #{title}", "url: #{url}", "code: #{code}", "-->" }.string
         end
       end
 
       # Assume we've already successfully downloaded code
-      example "gist ID, username and filename" do
+      example "happy path" do
         # I'd rather mock a class to instantiate a mock instance (for now) than integrate with the real Octopress tag implementation
         # It might be better to use the real thing, but just mock render()
         code_block = double("code block")
@@ -274,17 +278,27 @@ describe "gist_no_css tag" do
           parameters_as_text.strip.should =~ %r{#{Regexp.escape("::filename::")}\s+#{Regexp.escape("::pretty (not raw) url::")}}
         }.and_return(code_block)
 
-        irrelevant_context = double("a Liquid context").as_null_object
-
         code_block.should_receive(:render_code).with(irrelevant_context, "::code::")
 
         renders_code = RendersCodeUsingOctopressCodeBlock.new(code_block_class, irrelevant_context)
         renders_code.render("::code::", "::filename::", "::pretty (not raw) url::")
       end
 
-      example "gist ID and filename"
-      example "gist ID and username"
-      example "gist ID"
+      example "rendering fails" do
+        # I'd rather mock a class to instantiate a mock instance (for now) than integrate with the real Octopress tag implementation
+        # It might be better to use the real thing, but just mock render()
+        code_block = double("code block")
+        code_block_class = double("code block factory", new: code_block)
+
+        code_block.stub(:render_code).and_raise("I intentionally failed to render the code")
+
+        renders_code = RendersCodeUsingOctopressCodeBlock.new(code_block_class, irrelevant_context)
+        renders_code.render("::code::", "::filename::", "::pretty (not raw) url::").should =~ /<!--.+I failed to render the code.+I intentionally failed to render the code.+::code::.+-->/m
+
+      end
+
+      example "initialising fails" do
+      end
     end
   end
 
