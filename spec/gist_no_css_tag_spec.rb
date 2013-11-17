@@ -87,7 +87,10 @@ describe "gist_no_css tag" do
             end
           end
 
-          example "github throws me a redirect", future: true
+          example "github throws me a redirect" do
+            # This happens when we don't specify the username, and
+            # /raw/:gist_id redirects to /:detected_username/:gist_id/raw
+          end
         end
 
         context "gist has many files" do
