@@ -45,8 +45,8 @@ describe "gist_no_css tag" do
           Faraday.new(base) { | connection |
             yield connection
 
-            # IMPORTANT Without this line, nothing will happen.
-            connection.adapter Faraday.default_adapter
+          # IMPORTANT Without this line, nothing will happen.
+          connection.adapter Faraday.default_adapter
           }
         end
       end
@@ -95,6 +95,7 @@ describe "gist_no_css tag" do
 
         context "gist has many files" do
           let(:name_of_first_file) { "Gist1.java" }
+          let(:name_of_other_file) { "Gist2.rb" }
 
           context "filename specified" do
             example "matches first file" do
@@ -117,7 +118,19 @@ describe "gist_no_css tag" do
               end
             end
 
-            example "username not specified"
+            context "username not specified" do
+              example "matches first file" do
+                VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file_username_not_specified") do
+                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist1.java").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+                end
+              end
+
+              example "matches other-than-first file" do
+                VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file_username_not_specified") do
+                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist2.rb").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+                end
+              end
+            end
           end
 
           example "filename not specified" do
