@@ -98,7 +98,15 @@ describe "gist_no_css tag" do
         end
       end
 
-      example "failure downloading gist"
+      example "failure downloading gist" do
+        intentional_failure = RuntimeError.new("I intentionally failed to download the gist")
+        # SMELL I don't like the implicit dependency on an implementation detail here, but at least it's small.
+        # REFACTOR Split computing the URL from downloading it, perhaps?!
+        Faraday.stub(:get).and_raise(intentional_failure)
+        expect {
+          DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java")
+        }.to raise_error(intentional_failure)
+      end
     end
 
     context "parsing tag parameters", future: true do
