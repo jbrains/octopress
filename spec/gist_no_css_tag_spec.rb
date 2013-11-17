@@ -11,19 +11,19 @@ describe "gist_no_css tag" do
         c.hook_into :faraday
       end
 
+      class DownloadsGistUsingFaraday
+        # options: username, filename
+        def download(gist_id, options)
+          filename_portion = "#{options[:filename]}" if options[:filename]
+          url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}"
+          response = Faraday.get(url)
+          return response.body unless (400..599).include?(response.status.to_i)
+          raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{url}", response.inspect.to_s }.string)
+        end
+      end
+
       context "gist found" do
         context "gist has only one file" do
-          class DownloadsGistUsingFaraday
-            # options: username, filename
-            def download(gist_id, options)
-              filename_portion = "#{options[:filename]}" if options[:filename]
-              url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}"
-              response = Faraday.get(url)
-              return response.body unless (400..599).include?(response.status.to_i)
-              raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{url}", response.inspect.to_s }.string)
-            end
-          end
-
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
               DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
@@ -78,7 +78,26 @@ describe "gist_no_css tag" do
           end
         end
       end
-      example "gist not found"
+
+      context "gist not found" do
+        example "wrong gist ID" do
+          VCR.use_cassette("gist_not_found_due_to_wrong_gist_id") do
+            # ASSUME No gist will ever have a negative ID.
+            lambda {
+              DownloadsGistUsingFaraday.new.download(0, {})
+            }.should raise_error()
+          end
+        end
+
+        example "right gist ID, wrong username" do
+          VCR.use_cassette("gist_not_found_due_to_wrong_username") do
+            lambda {
+              DownloadsGistUsingFaraday.new.download(6964587, username: "notjbrains")
+            }.should raise_error()
+          end
+        end
+      end
+
       example "failure downloading gist"
     end
 
