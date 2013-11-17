@@ -330,6 +330,14 @@ describe "gist_no_css tag" do
         example "specify everything" do
           Jekyll::GistNoCssTag.parse_parameters("jbrains/1234 Gist1.java").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", "Gist1.java")
         end
+
+        example "omit username" do
+          Jekyll::GistNoCssTag.parse_parameters("1234 Gist1.java").should == Jekyll::GistNoCssTagParameters.new(1234, nil, "Gist1.java")
+        end
+
+        example "omit filename" do
+          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", nil)
+        end
       end
 
       context "parsing parameters fails" do

@@ -10,7 +10,8 @@ module Jekyll
     end
 
     def self.parse_parameters(parameters)
-      GistNoCssTagParameters.new(1234, "jbrains", "Gist1.java")
+      match_data = /(?:(.+)\/)?(\d+)(?:\s+([^\s]+))?/.match(parameters)
+      GistNoCssTagParameters.new(match_data[2].to_i, match_data[1], match_data[3])
     end
 
     def render(context)
