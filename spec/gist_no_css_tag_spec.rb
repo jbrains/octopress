@@ -10,6 +10,7 @@ describe "gist_no_css tag" do
       VCR.configure do |c|
         c.cassette_library_dir = 'fixtures/downloading_gists'
         c.hook_into :faraday
+        c.allow_http_connections_when_no_cassette = true
       end
 
       class DownloadsGistUsingFaraday

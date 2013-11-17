@@ -1,0 +1,22 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.duckduckgo.com
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+  response:
+    status:
+      code: 
+      message: 
+    headers: {}
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Sun, 17 Nov 2013 18:02:55 GMT
+recorded_with: VCR 2.7.0
