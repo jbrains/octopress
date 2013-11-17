@@ -26,15 +26,13 @@ describe "gist_no_css tag" do
 
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              response = Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java")
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == response.body
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
