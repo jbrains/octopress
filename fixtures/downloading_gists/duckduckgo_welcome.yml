@@ -17,7 +17,7 @@ http_interactions:
       server:
       - nginx
       date:
-      - Sun, 17 Nov 2013 17:50:51 GMT
+      - Sun, 17 Nov 2013 18:36:43 GMT
       content-type:
       - text/html
       content-length:
@@ -27,7 +27,7 @@ http_interactions:
       location:
       - https://duckduckgo.com/
       expires:
-      - Sun, 17 Nov 2013 17:50:52 GMT
+      - Sun, 17 Nov 2013 18:36:44 GMT
       cache-control:
       - max-age=1
     body:
@@ -35,5 +35,5 @@ http_interactions:
       string: "<html>\r\n<head><title>301 Moved Permanently</title></head>\r\n<body
         bgcolor=\"white\">\r\n<center><h1>301 Moved Permanently</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n"
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 17:50:51 GMT
+  recorded_at: Sun, 17 Nov 2013 18:36:43 GMT
 recorded_with: VCR 2.7.0

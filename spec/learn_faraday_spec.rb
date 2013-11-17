@@ -10,6 +10,7 @@ describe Faraday do
         response = Faraday.get("https://www.duckduckgo.com")
         response.status.should == 301
         response.body.should =~ /Moved Permanently/
+        response.headers[:location].should == "https://duckduckgo.com/"
       end
     end
 
@@ -17,12 +18,13 @@ describe Faraday do
       VCR.use_cassette("duckduckgo_welcome_following_redirects") do
         connection = Faraday.new() do | connection |
           connection.use FaradayMiddleware::FollowRedirects, limit: 1
+          # HOLY SHIT This is very important. Without this line, the test fails miserably.
+          connection.adapter Faraday.default_adapter
         end
 
         response = connection.get("https://www.duckduckgo.com")
-        pending "I can't figure out how to get Faraday to really follow a redirect" do
-          response.status.should == 200
-        end
+        response.status.should == 200
+        response.body.should =~ /DuckDuckGo/
       end
     end
   end
