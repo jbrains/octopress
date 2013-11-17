@@ -1,0 +1,123 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+  response:
+    status:
+      code: 200
+      message: 
+    headers:
+      server:
+      - GitHub.com
+      date:
+      - Sun, 17 Nov 2013 16:22:28 GMT
+      content-type:
+      - text/plain; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - close
+      status:
+      - 200 OK
+      strict-transport-security:
+      - max-age=31536000
+      x-frame-options:
+      - SAMEORIGIN
+      x-xss-protection:
+      - 1; mode=block
+      x-content-type-options:
+      - nosniff
+      x-ua-compatible:
+      - chrome=1
+      access-control-allow-origin:
+      - https://render.github.com
+      etag:
+      - '"152b1cb9b394116b9b9d4942b0401a52"'
+      content-disposition:
+      - inline
+      content-transfer-encoding:
+      - binary
+      x-served-by:
+      - github-fe103-cp1-prd.iad.github.net
+      cache-control:
+      - private
+      x-request-id:
+      - 87691776-d9d7-4e29-afb4-d5d835a8cbf1
+      x-runtime:
+      - '0.010003'
+      vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: |
+        public interface GistWithMultipleFiles {}
+    http_version: 
+  recorded_at: Sun, 17 Nov 2013 16:22:28 GMT
+- request:
+    method: get
+    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+  response:
+    status:
+      code: 200
+      message: 
+    headers:
+      server:
+      - GitHub.com
+      date:
+      - Sun, 17 Nov 2013 16:22:29 GMT
+      content-type:
+      - text/plain; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - close
+      status:
+      - 200 OK
+      strict-transport-security:
+      - max-age=31536000
+      x-frame-options:
+      - SAMEORIGIN
+      x-xss-protection:
+      - 1; mode=block
+      x-content-type-options:
+      - nosniff
+      x-ua-compatible:
+      - chrome=1
+      access-control-allow-origin:
+      - https://render.github.com
+      etag:
+      - '"152b1cb9b394116b9b9d4942b0401a52"'
+      content-disposition:
+      - inline
+      content-transfer-encoding:
+      - binary
+      x-served-by:
+      - github-fe102-cp1-prd.iad.github.net
+      cache-control:
+      - private
+      x-request-id:
+      - 474b8fd7-7d71-4556-b53a-bd9e5d11c918
+      x-runtime:
+      - '0.011580'
+      vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: |
+        public interface GistWithMultipleFiles {}
+    http_version: 
+  recorded_at: Sun, 17 Nov 2013 16:22:29 GMT
+recorded_with: VCR 2.7.0

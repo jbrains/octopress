@@ -45,9 +45,15 @@ describe "gist_no_css tag" do
           end
           example "github throws me a redirect", future: true
         end
+
         context "gist has many files" do
           context "filename specified" do
-            example "matches first file"
+            example "matches first file" do
+              VCR.use_cassette("gist_exists_with_many_files") do
+                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+              end
+            end
+
             example "matches other-than-first file"
             example "filename does not match"
           end
