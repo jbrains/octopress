@@ -326,8 +326,14 @@ describe "gist_no_css tag" do
     end
 
     describe "initialize()" do
-      example "happy path"
-      example "parsing parameters fails"
+      context "happy paths" do
+        example "specify everything" do
+          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234 Gist1.java").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", "Gist1.java")
+        end
+      end
+
+      context "parsing parameters fails" do
+      end
     end
   end
 end
