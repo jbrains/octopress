@@ -76,7 +76,6 @@ describe "gist_no_css tag" do
               DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
-
         end
       end
       example "gist not found"
