@@ -22,6 +22,7 @@ end
 group :test do
   gem 'vcr'
   gem 'faraday'
+  gem 'faraday_middleware'
 end
 
 gem 'sinatra', '~> 1.4.2'

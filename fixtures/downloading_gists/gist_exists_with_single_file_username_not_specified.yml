@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    uri: https://gist.github.com/raw/4111662/TestingIoFailure.java
     body:
       encoding: US-ASCII
       string: ''
@@ -11,21 +11,21 @@ http_interactions:
       - Faraday v0.8.8
   response:
     status:
-      code: 200
+      code: 302
       message: 
     headers:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 17:42:39 GMT
+      - Sun, 17 Nov 2013 17:42:30 GMT
       content-type:
-      - text/plain; charset=utf-8
+      - text/html; charset=utf-8
       transfer-encoding:
       - chunked
       connection:
       - close
       status:
-      - 200 OK
+      - 302 Found
       strict-transport-security:
       - max-age=31536000
       x-frame-options:
@@ -38,31 +38,26 @@ http_interactions:
       - chrome=1
       access-control-allow-origin:
       - https://render.github.com
-      etag:
-      - '"152b1cb9b394116b9b9d4942b0401a52"'
-      content-disposition:
-      - inline
-      content-transfer-encoding:
-      - binary
+      location:
+      - https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
       x-served-by:
-      - github-fe103-cp1-prd.iad.github.net
+      - github-fe102-cp1-prd.iad.github.net
       cache-control:
-      - private
+      - no-cache
       x-request-id:
-      - 14fe7a6f-20c1-4ff7-8dff-c245ea33130b
+      - 8b2ba9cf-5079-4560-8f64-b99c38530197
       x-runtime:
-      - '0.012572'
+      - '0.007082'
       vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
-      string: |
-        public interface GistWithMultipleFiles {}
+      string: <html><body>You are being <a href="https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java">redirected</a>.</body></html>
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 17:42:39 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:30 GMT
 - request:
     method: get
-    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    uri: https://gist.github.com/raw/4111662/TestingIoFailure.java
     body:
       encoding: US-ASCII
       string: ''
@@ -71,21 +66,21 @@ http_interactions:
       - Faraday v0.8.8
   response:
     status:
-      code: 200
+      code: 302
       message: 
     headers:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 17:42:40 GMT
+      - Sun, 17 Nov 2013 17:42:31 GMT
       content-type:
-      - text/plain; charset=utf-8
+      - text/html; charset=utf-8
       transfer-encoding:
       - chunked
       connection:
       - close
       status:
-      - 200 OK
+      - 302 Found
       strict-transport-security:
       - max-age=31536000
       x-frame-options:
@@ -98,26 +93,21 @@ http_interactions:
       - chrome=1
       access-control-allow-origin:
       - https://render.github.com
-      etag:
-      - '"152b1cb9b394116b9b9d4942b0401a52"'
-      content-disposition:
-      - inline
-      content-transfer-encoding:
-      - binary
+      location:
+      - https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
       x-served-by:
       - github-fe103-cp1-prd.iad.github.net
       cache-control:
-      - private
+      - no-cache
       x-request-id:
-      - fcd9acc5-9a2b-4b13-ab1c-a526d597f552
+      - 9beb01c0-1f53-43a3-b050-f79def710424
       x-runtime:
-      - '0.014174'
+      - '0.006902'
       vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
-      string: |
-        public interface GistWithMultipleFiles {}
+      string: <html><body>You are being <a href="https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java">redirected</a>.</body></html>
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 17:42:40 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:31 GMT
 recorded_with: VCR 2.7.0

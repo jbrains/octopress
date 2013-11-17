@@ -17,7 +17,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 16:26:16 GMT
+      - Sun, 17 Nov 2013 17:42:45 GMT
       content-type:
       - text/html; charset=utf-8
       transfer-encoding:
@@ -41,18 +41,18 @@ http_interactions:
       cache-control:
       - no-cache
       set-cookie:
-      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTg4Y2Q0MmE1MTAwYjQ4MTk1MzQ2NDJkMjc2MmVkNjBmBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMXpvQTIybjZRUy9EZytDMldIL2xNQ3R6Zy84cTB0M2hpUUVmR3AyRXpVVUU9BjsARg%3D%3D--3fdb988427130524bf2d28e53c8f4e5cfc9b11ce;
+      - _gist_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTNiMDQzMjk4N2QxOGJlODczMTk4MzA0YjMyYTM1NmJmBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMXNRZGRZeTMyL25yMzYreVFNaTVKRTJWczJ4WXkzbHdsSVExdytTOVBPRVE9BjsARg%3D%3D--db97d566d81f4038d53770db4b96d7b9c3711fb8;
         path=/; secure; HttpOnly
       x-request-id:
-      - 0cb0588e-9453-4188-8bc7-e182bdc337bc
+      - 16543569-d644-4382-bb21-7d5149c21d97
       x-runtime:
-      - '0.018353'
+      - '0.011575'
     body:
       encoding: UTF-8
       string: "<!DOCTYPE html>\n<html>\n<head prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#
         githubog: http://ogp.me/ns/fb/githubog#\">\n  <meta charset=\"utf-8\">\n  <meta
         http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\n  <title>Gists</title>\n\n
-        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"zoA22n6QS/Dg+C2WH/lMCtzg/8q0t3hiQEfGp2EzUUE=\"
+        \ <meta content=\"authenticity_token\" name=\"csrf-param\" />\n<meta content=\"sQddYy32/nr36+yQMi5JE2Vs2xYy3lwlIQ1w+S9POEQ=\"
         name=\"csrf-token\" />\n  <meta name=\"viewport\" content=\"width=960\">\n\n\n
         \ <link type=\"text/plain\" rel=\"author\" href=\"https://github.com/humans.txt\"
         />\n  <meta content=\"gist\" name=\"octolytics-app-id\" /><meta content=\"collector.githubapp.com\"
@@ -85,5 +85,5 @@ http_interactions:
         \     <li><a href=\"https://github.com/contact\">Contact</a></li>\n    </ul>\n\n
         \ </div><!-- /.container -->\n</div><!-- /.#footer -->\n\n  </footer>\n\n</body>\n</html>\n"
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 16:26:16 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:45 GMT
 recorded_with: VCR 2.7.0

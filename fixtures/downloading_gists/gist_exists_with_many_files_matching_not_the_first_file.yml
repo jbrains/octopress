@@ -17,7 +17,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 16:24:10 GMT
+      - Sun, 17 Nov 2013 17:42:41 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -45,13 +45,13 @@ http_interactions:
       content-transfer-encoding:
       - binary
       x-served-by:
-      - github-fe103-cp1-prd.iad.github.net
+      - github-fe102-cp1-prd.iad.github.net
       cache-control:
       - private
       x-request-id:
-      - d5998fb6-858e-4836-bed7-863a2d958668
+      - 0e4f2ec4-47cc-4dfd-9539-3dc5c245cd3e
       x-runtime:
-      - '0.016193'
+      - '0.014230'
       vary:
       - Accept-Encoding
     body:
@@ -60,7 +60,7 @@ http_interactions:
         module GistWithMultipleFiles
         end
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 16:24:10 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:41 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/6964587/raw/Gist2.rb
@@ -78,7 +78,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 16:24:11 GMT
+      - Sun, 17 Nov 2013 17:42:44 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -106,13 +106,13 @@ http_interactions:
       content-transfer-encoding:
       - binary
       x-served-by:
-      - github-fe103-cp1-prd.iad.github.net
+      - github-fe102-cp1-prd.iad.github.net
       cache-control:
       - private
       x-request-id:
-      - 99169177-0528-433a-b790-123a6e369361
+      - fcbe3b04-39c9-4b80-8073-e1d4c1609e0f
       x-runtime:
-      - '0.021441'
+      - '0.009542'
       vary:
       - Accept-Encoding
     body:
@@ -121,5 +121,5 @@ http_interactions:
         module GistWithMultipleFiles
         end
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 16:24:11 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:44 GMT
 recorded_with: VCR 2.7.0

@@ -17,7 +17,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sat, 16 Nov 2013 20:00:02 GMT
+      - Sun, 17 Nov 2013 17:42:28 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -45,13 +45,13 @@ http_interactions:
       content-transfer-encoding:
       - binary
       x-served-by:
-      - github-fe103-cp1-prd.iad.github.net
+      - github-fe102-cp1-prd.iad.github.net
       cache-control:
       - private
       x-request-id:
-      - 69a21d6b-9bcb-4436-9893-45de7d5eb162
+      - 67d27ae2-76cf-4661-9a93-f7e93467d565
       x-runtime:
-      - '0.048882'
+      - '0.012830'
       vary:
       - Accept-Encoding
     body:
@@ -79,7 +79,7 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 20:00:02 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:28 GMT
 - request:
     method: get
     uri: https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
@@ -97,7 +97,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sat, 16 Nov 2013 20:00:03 GMT
+      - Sun, 17 Nov 2013 17:42:28 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -129,9 +129,9 @@ http_interactions:
       cache-control:
       - private
       x-request-id:
-      - b8e95b12-4b9e-4461-b3da-0e1fca216ec1
+      - 6d2be703-f4e0-4031-b009-4c10c843f1f2
       x-runtime:
-      - '0.049170'
+      - '0.018564'
       vary:
       - Accept-Encoding
     body:
@@ -159,5 +159,5 @@ http_interactions:
             }
         }
     http_version: 
-  recorded_at: Sat, 16 Nov 2013 20:00:03 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:28 GMT
 recorded_with: VCR 2.7.0

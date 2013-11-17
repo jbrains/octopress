@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    uri: https://gist.github.com/raw/4111662
     body:
       encoding: US-ASCII
       string: ''
@@ -11,21 +11,21 @@ http_interactions:
       - Faraday v0.8.8
   response:
     status:
-      code: 200
+      code: 302
       message: 
     headers:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 17:42:39 GMT
+      - Sun, 17 Nov 2013 17:42:32 GMT
       content-type:
-      - text/plain; charset=utf-8
+      - text/html; charset=utf-8
       transfer-encoding:
       - chunked
       connection:
       - close
       status:
-      - 200 OK
+      - 302 Found
       strict-transport-security:
       - max-age=31536000
       x-frame-options:
@@ -38,31 +38,26 @@ http_interactions:
       - chrome=1
       access-control-allow-origin:
       - https://render.github.com
-      etag:
-      - '"152b1cb9b394116b9b9d4942b0401a52"'
-      content-disposition:
-      - inline
-      content-transfer-encoding:
-      - binary
+      location:
+      - https://gist.github.com/jbrains/4111662/raw
       x-served-by:
-      - github-fe103-cp1-prd.iad.github.net
+      - github-fe102-cp1-prd.iad.github.net
       cache-control:
-      - private
+      - no-cache
       x-request-id:
-      - 14fe7a6f-20c1-4ff7-8dff-c245ea33130b
+      - ae768bb8-d490-4665-be87-9fbab9e740cb
       x-runtime:
-      - '0.012572'
+      - '0.006224'
       vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
-      string: |
-        public interface GistWithMultipleFiles {}
+      string: <html><body>You are being <a href="https://gist.github.com/jbrains/4111662/raw">redirected</a>.</body></html>
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 17:42:39 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:32 GMT
 - request:
     method: get
-    uri: https://gist.github.com/jbrains/6964587/raw/Gist1.java
+    uri: https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java
     body:
       encoding: US-ASCII
       string: ''
@@ -77,7 +72,7 @@ http_interactions:
       server:
       - GitHub.com
       date:
-      - Sun, 17 Nov 2013 17:42:40 GMT
+      - Sun, 17 Nov 2013 17:42:34 GMT
       content-type:
       - text/plain; charset=utf-8
       transfer-encoding:
@@ -99,7 +94,7 @@ http_interactions:
       access-control-allow-origin:
       - https://render.github.com
       etag:
-      - '"152b1cb9b394116b9b9d4942b0401a52"'
+      - '"93491d36f2231f211142b9006f573e20"'
       content-disposition:
       - inline
       content-transfer-encoding:
@@ -109,15 +104,35 @@ http_interactions:
       cache-control:
       - private
       x-request-id:
-      - fcd9acc5-9a2b-4b13-ab1c-a526d597f552
+      - 9acfdfea-61b1-41b1-b6a9-c034b046f938
       x-runtime:
-      - '0.014174'
+      - '0.011162'
       vary:
       - Accept-Encoding
     body:
       encoding: UTF-8
       string: |
-        public interface GistWithMultipleFiles {}
+        @Test
+        public void ioFailure() throws Exception {
+            final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+            try {
+                new WriteTextToFileActionImpl() {
+                    @Override
+                    protected FileWriter fileWriterOn(File path) throws IOException {
+                        return new FileWriter(path) {
+                            @Override
+                            public void write(String str, int off, int len) throws IOException {
+                                throw ioFailure;
+                            }
+                        };
+                    }
+                }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+                fail("How did you survive the I/O failure?!");
+            } catch (IOException success) {
+                if (success != ioFailure)
+                    throw success;
+            }
+        }
     http_version: 
-  recorded_at: Sun, 17 Nov 2013 17:42:40 GMT
+  recorded_at: Sun, 17 Nov 2013 17:42:34 GMT
 recorded_with: VCR 2.7.0

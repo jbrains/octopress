@@ -5,6 +5,7 @@ describe "gist_no_css tag" do
     context "downloading gist code" do
       require "vcr"
       require "faraday"
+      require "faraday_middleware"
 
       VCR.configure do |c|
         c.cassette_library_dir = 'fixtures/downloading_gists'
@@ -14,11 +15,25 @@ describe "gist_no_css tag" do
       class DownloadsGistUsingFaraday
         # options: username, filename
         def download(gist_id, options = {})
-          filename_portion = "#{options[:filename]}" if options[:filename]
-          url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw/#{filename_portion}"
-          response = Faraday.get(url)
+          url_base = "https://gist.github.com"
+          if options[:username]
+            filename_portion = "/#{options[:filename]}" if options[:filename]
+            url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+            uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+          else
+            filename_portion = "/#{options[:filename]}" if options[:filename]
+            url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
+            uri = "/raw/#{gist_id}#{filename_portion}"
+          end
+          response = http_get(url_base, uri)
+
           return response.body unless (400..599).include?(response.status.to_i)
           raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{url}", response.inspect.to_s }.string)
+        end
+
+        # REFACTOR Move this onto a collaborator
+        def http_get(base, uri)
+          Faraday.get(base + uri)
         end
       end
 
@@ -43,6 +58,19 @@ describe "gist_no_css tag" do
               }.should raise_error()
             end
           end
+
+          example "username not specified, but filename specified" do
+            VCR.use_cassette("gist_exists_with_single_file_username_not_specified") do
+              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/raw/4111662/TestingIoFailure.java").body
+            end
+          end
+
+          example "neither username nor filename specified" do
+            VCR.use_cassette("gist_exists_with_single_file_username_not_specified_and_filename_not_specified") do
+              DownloadsGistUsingFaraday.new.download(4111662).should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+            end
+          end
+
           example "github throws me a redirect", future: true
         end
 
@@ -67,6 +95,8 @@ describe "gist_no_css tag" do
                 }.should raise_error()
               end
             end
+
+            example "username not specified"
           end
 
           example "filename not specified" do
@@ -76,6 +106,8 @@ describe "gist_no_css tag" do
               DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
+
+          example "neither filename nor username specified"
         end
       end
 
@@ -84,7 +116,7 @@ describe "gist_no_css tag" do
           VCR.use_cassette("gist_not_found_due_to_wrong_gist_id") do
             # ASSUME No gist will ever have a negative ID.
             lambda {
-              DownloadsGistUsingFaraday.new.download(0)
+              DownloadsGistUsingFaraday.new.download(-1)
             }.should raise_error()
           end
         end
@@ -102,9 +134,8 @@ describe "gist_no_css tag" do
         intentional_failure = RuntimeError.new("I intentionally failed to download the gist")
         # SMELL I don't like the implicit dependency on an implementation detail here, but at least it's small.
         # REFACTOR Split computing the URL from downloading it, perhaps?!
-        Faraday.stub(:get).and_raise(intentional_failure)
         expect {
-          DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java")
+          DownloadsGistUsingFaraday.new.tap { |d| d.stub(:http_get).and_raise(intentional_failure) }.download(6964587, username: "jbrains", filename: "Gist1.java") 
         }.to raise_error(intentional_failure)
       end
     end
