@@ -98,7 +98,10 @@ module Jekyll
 
     def render(context)
       code = super
-      
+      render(code)
+    end
+
+    def render_code(context, code)
       # REFACTOR Use a StringIO as a collecting parameter; put the builders on a little object.
       source = ""
       source += @caption if @caption

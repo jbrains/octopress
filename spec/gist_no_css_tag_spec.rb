@@ -258,7 +258,7 @@ describe "gist_no_css tag" do
           parameters_as_text = "#{title} #{url}"
           irrelevant_tokens = []
           code_block_tag = @octopress_code_block_class.new("irrelevant tag name", parameters_as_text, irrelevant_tokens)
-          code_block_tag.render(@liquid_context)
+          code_block_tag.render_code(@liquid_context, code)
         end
       end
 
@@ -271,15 +271,15 @@ describe "gist_no_css tag" do
 
         code_block_class.should_receive(:new) { | _, parameters_as_text, _ |
           # CodeBlock needs to have filename, then URL
-          parameters_as_text.strip.should =~ %r{#{Regexp.escape("::filename::")}\s+#{Regexp.escape("::gist pretty (not raw) url::")}}
+          parameters_as_text.strip.should =~ %r{#{Regexp.escape("::filename::")}\s+#{Regexp.escape("::pretty (not raw) url::")}}
         }.and_return(code_block)
 
         irrelevant_context = double("a Liquid context").as_null_object
 
-        code_block.should_receive(:render).with(irrelevant_context)
+        code_block.should_receive(:render_code).with(irrelevant_context, "::code::")
 
         renders_code = RendersCodeUsingOctopressCodeBlock.new(code_block_class, irrelevant_context)
-        renders_code.render("::irrelevant code::", "::filename::", "::gist pretty (not raw) url::")
+        renders_code.render("::code::", "::filename::", "::pretty (not raw) url::")
       end
 
       example "gist ID and filename"
