@@ -93,12 +93,13 @@ module Jekyll
       @file = parsed_tag_parameters[:file]
       @caption = parsed_tag_parameters[:caption]
 
+      # ASSUME parses tokens, among other things
       super
     end
 
     def render(context)
       code = super
-      render(code)
+      render_code(context, code)
     end
 
     def render_code(context, code)

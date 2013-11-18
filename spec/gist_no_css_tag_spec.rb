@@ -243,28 +243,45 @@ describe "gist_no_css tag" do
     end
   end
 
+  class RendersCodeUsingOctopressCodeBlock
+    def initialize(octopress_code_block_class, liquid_context)
+      @octopress_code_block_class = octopress_code_block_class
+      @liquid_context = liquid_context
+    end
+
+    def render(code, title, url)
+      parameters_as_text = "#{title} #{url}"
+      irrelevant_tokens = []
+      code_block_tag = @octopress_code_block_class.new("", parameters_as_text, irrelevant_tokens)
+      code_block_tag.render_code(@liquid_context, code)
+    rescue => oops
+      StringIO.new.tap { | canvas | canvas.puts "<!--", "I failed to render the code", oops.message, oops.backtrace, "title: #{title}", "url: #{url}", "code: #{code}", "-->" }.string
+    end
+  end
+
+  context "contracts" do
+    pending "None of this will work until I figure out how to use CodeBlock correctly" do
+      context "Renders Code" do
+        subject { RendersCodeUsingOctopressCodeBlock.new(Jekyll::CodeBlock, Liquid::Context.new) }
+
+        example "responds to render(code, title, url)" do
+          subject.should respond_to(:render)
+        end
+
+        example "renders text" do
+          subject.render("::code::", "::title::", "::url::").should be_kind_of(String)
+          subject.render("::code::", "::title::", "::url::").should == ""
+        end
+      end
+    end
+  end
+
   context "integrating the pieces with other Octopress plugins" do
     require "jekyll" # only because the CodeBlock plugin doesn't do this
     require "plugins/code_block"
 
     context "rendering code with CodeBlock" do
       let(:irrelevant_context) { double("a Liquid context").as_null_object }
-
-      class RendersCodeUsingOctopressCodeBlock
-        def initialize(octopress_code_block_class, liquid_context)
-          @octopress_code_block_class = octopress_code_block_class
-          @liquid_context = liquid_context
-        end
-
-        def render(code, title, url)
-          parameters_as_text = "#{title} #{url}"
-          irrelevant_tokens = []
-          code_block_tag = @octopress_code_block_class.new("irrelevant tag name", parameters_as_text, irrelevant_tokens)
-          code_block_tag.render_code(@liquid_context, code)
-        rescue => oops
-          StringIO.new.tap { | canvas | canvas.puts "<!--", "I failed to render the code", oops.message, oops.backtrace, "title: #{title}", "url: #{url}", "code: #{code}", "-->" }.string
-        end
-      end
 
       # Assume we've already successfully downloaded code
       example "happy path" do
@@ -356,9 +373,9 @@ describe "gist_no_css tag" do
           "",
           "...",
         ].each do | bad_parameters_text |
-          example "#{bad_parameters_text} is invalid" do
-            expect { Jekyll::GistNoCssTag.parse_parameters(bad_parameters_text) }.to raise_error(ArgumentError)
-          end
+        example "#{bad_parameters_text} is invalid" do
+          expect { Jekyll::GistNoCssTag.parse_parameters(bad_parameters_text) }.to raise_error(ArgumentError)
+        end
         end
       end
     end
