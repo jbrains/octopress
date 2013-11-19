@@ -262,9 +262,30 @@ describe "gist_no_css tag" do
     end
   end
 
+  require "jekyll" # only because the CodeBlock plugin doesn't do this
+  require "plugins/code_block" # registers the CodeBlock tag, which we need
+
+  # Everything in here knows about Liquid
+  class RenderGistFileAsHtml
+    def render_gist_file_as_code_block(gist_file)
+      raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
+      <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+    end
+
+    def render_code_block_as_html(code_block)
+      Liquid::Template.parse(code_block).render(Liquid::Context.new)
+    end
+
+    def render(gist_file)
+      render_code_block_as_html(render_gist_file_as_code_block(gist_file))
+    end
+  end
+
   context "integrating the pieces with other Octopress plugins" do
-    require "jekyll" # only because the CodeBlock plugin doesn't do this
-    require "plugins/code_block" # registers the CodeBlock tag, which we need
 
     context "rendering the gist file with a CodeBlock" do
       # Assume we've already successfully downloaded code
@@ -279,25 +300,6 @@ describe "gist_no_css tag" do
       # how not to depend on that magic. Copy the magic here, if you can.
       #
       example "happy path" do
-        class RenderGistFileAsHtml
-          def render_gist_file_as_code_block(gist_file)
-            raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
-            <<-CODEBLOCK
-{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
-#{gist_file.code}
-{% endcodeblock %}
-CODEBLOCK
-          end
-
-          def render_code_block_as_html(code_block)
-            Liquid::Template.parse(code_block).render(Liquid::Context.new)
-          end
-
-          def render(gist_file)
-            render_code_block_as_html(render_gist_file_as_code_block(gist_file))
-          end
-        end
-
         render_gist_file = RenderGistFileAsHtml.new
         render_gist_file.stub(:render_gist_file_as_code_block).with("::gist file::").and_return("::code block::")
         render_gist_file.stub(:render_code_block_as_html).with("::code block::").and_return("::html::")
