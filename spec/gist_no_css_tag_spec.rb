@@ -339,12 +339,7 @@ TEMPLATE
         rendered = Liquid::Template.parse(["{% codeblock filename{%behaving%}badly %}", "{% raw %}", "{% endraw %}", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new)
         # The parameter I attempted to pass to {% codeblock %} was cleft in twain!
         rendered.should =~ %r{<span>filename\{%behaving</span>.+<span class='line'>badly %\}</span>}m
-      end
-
-      example "what if we Liquid-escape the characters inside the opening tag?" do
-        rendered = Liquid::Template.parse(["{% codeblock filename{%behaving%}badly %}", "{% raw %}", "{% endraw %}", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new)
-        # The parameter I attempted to pass to {% codeblock %} was cleft in twain!
-        rendered.should =~ %r{<span>filename\{%behaving</span>.+<span class='line'>badly %\}</span>}m
+        # Therefore, don't let this happen. You'll thank me later.
       end
     end
 
