@@ -2,6 +2,8 @@ require "rspec"
 
 describe "gist_no_css tag" do
   context "the pieces" do
+    GistFile = Struct.new(:code, :filename, :gist_url)
+
     context "downloading gist code" do
       require "vcr"
       require "faraday"
@@ -16,20 +18,20 @@ describe "gist_no_css tag" do
       class DownloadsGistUsingFaraday
         # options: username, filename
         def download(gist_id, options = {})
-          url_base = "https://gist.github.com"
+          base = "https://gist.github.com"
           if options[:username]
             filename_portion = "/#{options[:filename]}" if options[:filename]
-            url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+            raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
             uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
           else
             filename_portion = "/#{options[:filename]}" if options[:filename]
-            url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
+            raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
             uri = "/raw/#{gist_id}#{filename_portion}"
           end
-          response = http_get(url_base, uri)
+          response = http_get(base, uri)
 
           return response.body unless (400..599).include?(response.status.to_i)
-          raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{url}", response.inspect.to_s }.string)
+          raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
         end
 
         # REFACTOR Move this onto a collaborator
@@ -243,7 +245,6 @@ describe "gist_no_css tag" do
     end
   end
 
-  GistFile = Struct.new(:code, :filename, :gist_url)
 
   context "contracts" do
     pending "None of this will work until I figure out how to use CodeBlock correctly" do
