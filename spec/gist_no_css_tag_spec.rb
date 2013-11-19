@@ -338,6 +338,10 @@ CODEBLOCK
         example "what if somehow {% and %} get into the tag parameters?!" do
           expect { render_gist_file_as_code_block(GistFile.new("code is safe, so don't worry about it", "{% gist URL not playing nicely %}", "{% filename not playing nicely %}")) }.to raise_error(ArgumentError) { |e| e.message.should =~ %r[Liquid can't handle % or { or } inside tags, so don't do it.] }
         end
+
+        example "no filename" do
+          render_gist_file_as_code_block(GistFile.new("::code::", "::gist URL::", nil)).should =~ Regexp.new([%w({% codeblock ::gist\ URL:: %} ::code:: {% endcodeblock %})].join("\\s+"), Regexp::MULTILINE)
+        end
       end
 
       context "rendering codeblock" do
