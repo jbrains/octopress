@@ -4,6 +4,67 @@ describe "gist_no_css tag" do
   context "the pieces" do
     # :filename is optional
     GistFile = Struct.new(:code, :gist_url, :filename)
+    
+    class DownloadsGistUsingFaraday
+      # options: username, filename
+      def download(gist_id, options = {})
+        base = "https://gist.github.com"
+        if options[:username]
+          filename_portion = "/#{options[:filename]}" if options[:filename]
+          raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+          pretty_url = "https://gist.github.com/#{options[:username]}/#{gist_id}"
+          uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+        else
+          filename_portion = "/#{options[:filename]}" if options[:filename]
+          raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
+          pretty_url = "https://gist.github.com/#{gist_id}"
+          uri = "/raw/#{gist_id}#{filename_portion}"
+        end
+        response = http_get(base, uri)
+
+        return GistFile.new(response.body, pretty_url, nil) unless (400..599).include?(response.status.to_i)
+        raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
+      end
+
+      # REFACTOR Move this onto a collaborator
+      def http_get(base, uri)
+        faraday_with_default_adapter(base) { | connection |
+          connection.use FaradayMiddleware::FollowRedirects, limit: 1
+        }.get(uri)
+      end
+
+      # REFACTOR Move this into Faraday
+      # REFACTOR Rename this something more intention-revealing
+      def faraday_with_default_adapter(base, &block)
+        Faraday.new(base) { | connection |
+          yield connection
+
+          # IMPORTANT Without this line, nothing will happen.
+          connection.adapter Faraday.default_adapter
+        }
+      end
+    end
+
+    # Intentionally link to the gist page, rather than the raw code.
+    context "packaging the GistFile" do
+      subject { DownloadsGistUsingFaraday.new.tap { | d | d.stub(:http_get).and_return(double("like a Faraday response", body: "::code::", status: 200)) } }
+
+      example "happy path" do
+        subject.download(1, username: "::username::", filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
+      end
+
+      example "filename not specified" do
+        subject.download(1, username: "::username::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
+      end
+
+      example "username not specified" do
+        subject.download(1, filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/1")
+      end
+
+      example "neither username nor filename specified" do
+        subject.download(1).should == GistFile.new("::code::", "https://gist.github.com/1")
+      end
+    end
 
     context "downloading gist code" do
       require "vcr"
@@ -14,44 +75,6 @@ describe "gist_no_css tag" do
         c.cassette_library_dir = 'fixtures/downloading_gists'
         c.hook_into :faraday
         c.allow_http_connections_when_no_cassette = true
-      end
-
-      class DownloadsGistUsingFaraday
-        # options: username, filename
-        def download(gist_id, options = {})
-          base = "https://gist.github.com"
-          if options[:username]
-            filename_portion = "/#{options[:filename]}" if options[:filename]
-            raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
-            uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
-          else
-            filename_portion = "/#{options[:filename]}" if options[:filename]
-            raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
-            uri = "/raw/#{gist_id}#{filename_portion}"
-          end
-          response = http_get(base, uri)
-
-          return GistFile.new(response.body, nil, nil) unless (400..599).include?(response.status.to_i)
-          raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
-        end
-
-        # REFACTOR Move this onto a collaborator
-        def http_get(base, uri)
-          faraday_with_default_adapter(base) { | connection |
-            connection.use FaradayMiddleware::FollowRedirects, limit: 1
-          }.get(uri)
-        end
-
-        # REFACTOR Move this into Faraday
-        # REFACTOR Rename this something more intention-revealing
-        def faraday_with_default_adapter(base, &block)
-          Faraday.new(base) { | connection |
-            yield connection
-
-          # IMPORTANT Without this line, nothing will happen.
-          connection.adapter Faraday.default_adapter
-          }
-        end
       end
 
       context "gist found" do
