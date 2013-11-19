@@ -2,7 +2,8 @@ require "rspec"
 
 describe "gist_no_css tag" do
   context "the pieces" do
-    GistFile = Struct.new(:code, :filename, :gist_url)
+    # :filename is optional
+    GistFile = Struct.new(:code, :gist_url, :filename)
 
     context "downloading gist code" do
       require "vcr"
@@ -322,7 +323,7 @@ CODEBLOCK
         end
 
         example "happy path" do
-          gist_file = GistFile.new("::code::", "::filename::", "::gist URL::")
+          gist_file = GistFile.new("::code::", "::gist URL::", "::filename::")
           codeblock_source = render_gist_file_as_code_block(gist_file)
           # I'd rather compare abstract syntax trees or something, but I really
           # don't want to reimplement a parser.
@@ -335,7 +336,7 @@ CODEBLOCK
         end
 
         example "what if somehow {% and %} get into the tag parameters?!" do
-          expect { render_gist_file_as_code_block(GistFile.new("code is safe, so don't worry about it", "{% filename not playing nicely %}", "{% gist URL not playing nicely %}")) }.to raise_error(ArgumentError) { |e| e.message.should =~ %r[Liquid can't handle % or { or } inside tags, so don't do it.] }
+          expect { render_gist_file_as_code_block(GistFile.new("code is safe, so don't worry about it", "{% gist URL not playing nicely %}", "{% filename not playing nicely %}")) }.to raise_error(ArgumentError) { |e| e.message.should =~ %r[Liquid can't handle % or { or } inside tags, so don't do it.] }
         end
       end
 
