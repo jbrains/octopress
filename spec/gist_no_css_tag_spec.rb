@@ -30,7 +30,7 @@ describe "gist_no_css tag" do
           end
           response = http_get(base, uri)
 
-          return response.body unless (400..599).include?(response.status.to_i)
+          return GistFile.new(response.body, nil, nil).code unless (400..599).include?(response.status.to_i)
           raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
         end
 
