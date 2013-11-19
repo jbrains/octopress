@@ -31,7 +31,7 @@ describe "gist_no_css tag" do
           end
           response = http_get(base, uri)
 
-          return GistFile.new(response.body, nil, nil).code unless (400..599).include?(response.status.to_i)
+          return GistFile.new(response.body, nil, nil) unless (400..599).include?(response.status.to_i)
           raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
         end
 
@@ -58,13 +58,13 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
@@ -80,13 +80,13 @@ describe "gist_no_css tag" do
             VCR.use_cassette("gist_exists_with_single_file_username_not_specified") do
               # IMPORTANT The expected result should be the target URL, not the
               # one through which the username-less shortcut redirects!
-              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "neither username nor filename specified" do
             VCR.use_cassette("gist_exists_with_single_file_username_not_specified_and_filename_not_specified") do
-              DownloadsGistUsingFaraday.new.download(4111662).should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(4111662).code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
@@ -103,13 +103,13 @@ describe "gist_no_css tag" do
           context "filename specified" do
             example "matches first file" do
               VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file") do
-                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
               end
             end
 
             example "matches other-than-first file" do
               VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file") do
-                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist2.rb").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
               end
             end
 
@@ -124,13 +124,13 @@ describe "gist_no_css tag" do
             context "username not specified" do
               example "matches first file" do
                 VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file_username_not_specified") do
-                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist1.java").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
                 end
               end
 
               example "matches other-than-first file" do
                 VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file_username_not_specified") do
-                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist2.rb").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
                 end
               end
             end
@@ -138,13 +138,13 @@ describe "gist_no_css tag" do
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_many_files_but_not_specifying_the_filename") do
-              DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
+              DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
 
           example "neither filename nor username specified" do
             VCR.use_cassette("gist_exists_with_many_files_but_specifying_only_gist_id") do
-              DownloadsGistUsingFaraday.new.download(6964587).should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
+              DownloadsGistUsingFaraday.new.download(6964587).code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
         end
