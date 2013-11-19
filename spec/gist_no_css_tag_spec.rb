@@ -266,7 +266,7 @@ describe "gist_no_css tag" do
     require "jekyll" # only because the CodeBlock plugin doesn't do this
     require "plugins/code_block" # registers the CodeBlock tag, which we need
 
-    context "rendering code with CodeBlock" do
+    context "rendering the gist file with a CodeBlock" do
       # Assume we've already successfully downloaded code
       #
       # WTF We have to do this by rendering an entire Liquid::Template,
@@ -279,27 +279,30 @@ describe "gist_no_css tag" do
       # how not to depend on that magic. Copy the magic here, if you can.
       #
       example "happy path" do
-        class RendersGistFile
-          def initialize(function_of_gist_file_to_code_block, function_of_code_block_to_html)
-            @steps = [function_of_gist_file_to_code_block, function_of_code_block_to_html]
+        class RenderGistFileAsHtml
+          def render_gist_file_as_code_block(gist_file)
+            raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
+            <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+          end
+
+          def render_code_block_as_html(code_block)
+            Liquid::Template.parse(code_block).render(Liquid::Context.new)
           end
 
           def render(gist_file)
-            # ASSUME The steps are all functions of one argument.
-            @steps.inject(gist_file) { | intermediate_result, next_function | next_function.call(intermediate_result) }
+            render_code_block_as_html(render_gist_file_as_code_block(gist_file))
           end
         end
 
-        gist_file = GistFile.new("::code::", "::filename::", "::gist URL::")
-        gist_file_to_code_block = double("I convert gist files to code blocks")
-        code_block_to_html = double("I convert code blocks to HTML")
+        render_gist_file = RenderGistFileAsHtml.new
+        render_gist_file.stub(:render_gist_file_as_code_block).with("::gist file::").and_return("::code block::")
+        render_gist_file.stub(:render_code_block_as_html).with("::code block::").and_return("::html::")
 
-        gist_file_to_code_block.should_receive(:call).with(gist_file).and_return("::code block::")
-        code_block_to_html.should_receive(:call).with("::code block::").and_return("::html::")
-
-        renders_gist_file = RendersGistFile.new(gist_file_to_code_block, code_block_to_html)
-
-        renders_gist_file.render(gist_file).should == "::html::"
+        render_gist_file.render("::gist file::").should == "::html::"
       end
 
       example "rendering the gist file as a code block fails" do
@@ -311,24 +314,8 @@ describe "gist_no_css tag" do
       end
 
       context "generating codeblock from GistFile" do
-        class RendersGistFileAsOctopressCodeBlock
-          def render_gist_file_as_code_block(gist_file)
-            raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
-            <<-CODEBLOCK
-{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
-#{gist_file.code}
-{% endcodeblock %}
-CODEBLOCK
-          end
-        end
-
         def render_gist_file_as_code_block(gist_file)
-          raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
-          <<-CODEBLOCK
-{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
-#{gist_file.code}
-{% endcodeblock %}
-CODEBLOCK
+          RenderGistFileAsHtml.new.render_gist_file_as_code_block(gist_file)
         end
 
         example "happy path" do
@@ -350,15 +337,9 @@ CODEBLOCK
       end
 
       context "rendering codeblock" do
-        class RendersCodeBlockWithLiquidTemplate
-          def self.render(template)
-            Liquid::Template.parse(template).render(Liquid::Context.new)
-          end
-        end
-
         # ASSUME codeblock_template has been sanitised for my protection
         def render_codeblock_with_liquid(codeblock_template)
-          RendersCodeBlockWithLiquidTemplate.render(codeblock_template)
+          RenderGistFileAsHtml.new.render_code_block_as_html(codeblock_template)
         end
 
         example "happy path" do
