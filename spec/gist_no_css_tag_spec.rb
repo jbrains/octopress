@@ -264,7 +264,7 @@ describe "gist_no_css tag" do
 
   context "integrating the pieces with other Octopress plugins" do
     require "jekyll" # only because the CodeBlock plugin doesn't do this
-    require "plugins/code_block"
+    require "plugins/code_block" # registers the CodeBlock tag, which we need
 
     context "rendering code with CodeBlock" do
       # Assume we've already successfully downloaded code
@@ -279,18 +279,49 @@ describe "gist_no_css tag" do
       # how not to depend on that magic. Copy the magic here, if you can.
       #
       example "happy path" do
-        pending "WIP" do
-          rendered_html = RendersCodeUsingOctopressCodeBlock.render(GistFile.new("::code::", "::title::", "::url::"))
-          # Spot checks. I don't want to get into comparing HTML just yet.
-          # If I need to check the HTML more carefully, then I'll dive into
-          # how to do that without wanting to gouge out my eyes.
-          rendered_html.should =~ %r{::code::}
-          rendered_html.should =~ %r{::title::}
-          rendered_html.should =~ %r{::url::}
+        class RendersGistFile
+          def initialize(function_of_gist_file_to_code_block, function_of_code_block_to_html)
+            @steps = [function_of_gist_file_to_code_block, function_of_code_block_to_html]
+          end
+
+          def render(gist_file)
+            # ASSUME The steps are all functions of one argument.
+            @steps.inject(gist_file) { | intermediate_result, next_function | next_function.call(intermediate_result) }
+          end
         end
+
+        gist_file = GistFile.new("::code::", "::filename::", "::gist URL::")
+        gist_file_to_code_block = double("I convert gist files to code blocks")
+        code_block_to_html = double("I convert code blocks to HTML")
+
+        gist_file_to_code_block.should_receive(:call).with(gist_file).and_return("::code block::")
+        code_block_to_html.should_receive(:call).with("::code block::").and_return("::html::")
+
+        renders_gist_file = RendersGistFile.new(gist_file_to_code_block, code_block_to_html)
+
+        renders_gist_file.render(gist_file).should == "::html::"
+      end
+
+      example "rendering the gist file as a code block fails" do
+        # Just let the error bubble up
+      end
+
+      example "rendering the code block as HTML fails" do
+        # Just let the error bubble up
       end
 
       context "generating codeblock from GistFile" do
+        class RendersGistFileAsOctopressCodeBlock
+          def render_gist_file_as_code_block(gist_file)
+            raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
+            <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+          end
+        end
+
         def render_gist_file_as_code_block(gist_file)
           raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
           <<-CODEBLOCK
@@ -319,7 +350,7 @@ CODEBLOCK
       end
 
       context "rendering codeblock" do
-        class RendersCodeblockWithLiquidTemplate
+        class RendersCodeBlockWithLiquidTemplate
           def self.render(template)
             Liquid::Template.parse(template).render(Liquid::Context.new)
           end
@@ -327,7 +358,7 @@ CODEBLOCK
 
         # ASSUME codeblock_template has been sanitised for my protection
         def render_codeblock_with_liquid(codeblock_template)
-          RendersCodeblockWithLiquidTemplate.render(codeblock_template)
+          RendersCodeBlockWithLiquidTemplate.render(codeblock_template)
         end
 
         example "happy path" do
