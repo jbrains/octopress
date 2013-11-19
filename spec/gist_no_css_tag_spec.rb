@@ -317,11 +317,11 @@ TEMPLATE
         rendered_gist_as_html = Liquid::Template.parse(equivalent_liquid_template_text).render(Liquid::Context.new)
         # Spot checks, rather than checking the entire content.
         # Is the title there?
-        rendered_gist_as_html =~ %r{TestingIoFailure.java}
+        rendered_gist_as_html.should =~ %r{TestingIoFailure\.java}m
         # Is the URL there?
-        rendered_gist_as_html =~ %r{https://gist.github.com/jbrains/4111662}
+        rendered_gist_as_html.should =~ %r{https://gist.github.com/jbrains/4111662}m
         # Do we probably have the expected code? (Where else would this come from?)
-        rendered_gist_as_html =~ %r{fail("How did you survive the I/O failure?!");}
+        rendered_gist_as_html.should =~ %r{fail.+How did you survive the I/O failure\?\!}m
       end
 
       example "do not try to use multiple Liquid 'raw' tags in a line, because they're greedy" do
