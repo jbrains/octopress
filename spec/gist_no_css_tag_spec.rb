@@ -243,6 +243,8 @@ describe "gist_no_css tag" do
     end
   end
 
+  GistFile = Struct.new(:code, :filename, :gist_url)
+
   class RendersCodeUsingOctopressCodeBlock
     def initialize(octopress_code_block_class, liquid_context)
       raise "I have this utterly and hopelessly wrong"
@@ -252,6 +254,10 @@ describe "gist_no_css tag" do
       raise "I have this utterly and hopelessly wrong"
     rescue => oops
       StringIO.new.tap { | canvas | canvas.puts "<!--", "I failed to render the code", oops.message, oops.backtrace, "title: #{title}", "url: #{url}", "code: #{code}", "-->" }.string
+    end
+
+    def self.render(gist_file)
+      "Intentionally nothing yet"
     end
   end
 
@@ -276,11 +282,121 @@ describe "gist_no_css tag" do
     require "jekyll" # only because the CodeBlock plugin doesn't do this
     require "plugins/code_block"
 
+    # WARNING This depends heavily on global data in the Liquid::Template
+    # universe, which I hate, but which I couldn't figure out how to
+    # avoid. There be magic here. Please, if you have energy, figure out
+    # how not to depend on that magic. Copy the magic here, if you can.
+    context "learning how to render a Liquid::Template" do
+      example "realistic example using the previously downloaded content of a gist" do
+        equivalent_liquid_template_text = <<-TEMPLATE
+{% codeblock TestingIoFailure.java https://gist.github.com/jbrains/4111662 %}
+@Test
+public void ioFailure() throws Exception {
+    final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+    try {
+        new WriteTextToFileActionImpl() {
+            @Override
+            protected FileWriter fileWriterOn(File path) throws IOException {
+                return new FileWriter(path) {
+                    @Override
+                    public void write(String str, int off, int len) throws IOException {
+                        throw ioFailure;
+                    }
+                };
+            }
+        }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+        fail("How did you survive the I/O failure?!");
+    } catch (IOException success) {
+        if (success != ioFailure)
+            throw success;
+    }
+}
+{% endcodeblock %}
+TEMPLATE
+
+        rendered_gist_as_html = Liquid::Template.parse(equivalent_liquid_template_text).render(Liquid::Context.new)
+        # Spot checks, rather than checking the entire content.
+        # Is the title there?
+        rendered_gist_as_html =~ %r{TestingIoFailure.java}
+        # Is the URL there?
+        rendered_gist_as_html =~ %r{https://gist.github.com/jbrains/4111662}
+        # Do we probably have the expected code? (Where else would this come from?)
+        rendered_gist_as_html =~ %r{fail("How did you survive the I/O failure?!");}
+      end
+
+      example "do not try to use multiple Liquid 'raw' tags in a line, because they're greedy" do
+        pending "I have opened an issue with Shopify/liquid" do
+          Liquid::Template.parse(["{% codeblock %}", "A line with {% raw %}{% {% endraw %} and {% raw %} %}{% endraw %} in it, which need to be escaped for Liquid.", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new).should =~ /A\ line\ with\ \{\%\ and\ \%\}\ in\ it/
+        end
+      end
+
+
+      example "escaping for Liquid a little more sensibly" do
+        Liquid::Template.parse(["{% codeblock %}", "{% raw %}", "A line with {% and %} in it, which need to be escaped for Liquid.", "{% endraw %}", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new).should =~ /A\ line\ with\ \{\%\ and\ \%\}\ in\ it/
+      end
+
+      example "what if we put these characters inside the tags?" do
+        rendered = Liquid::Template.parse(["{% codeblock filename{%behaving%}badly %}", "{% raw %}", "{% endraw %}", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new)
+        # The parameter I attempted to pass to {% codeblock %} was cleft in twain!
+        rendered.should =~ %r{<span>filename\{%behaving</span>.+<span class='line'>badly %\}</span>}m
+      end
+    end
+
     context "rendering code with CodeBlock" do
       # Assume we've already successfully downloaded code
-      example "happy path"
-      example "rendering fails"
-      example "initialising fails"
+      #
+      # WTF We have to do this by rendering an entire Liquid::Template,
+      # because I couldn't figure out how to instantiate and render only
+      # a Jekyll::CodeBlock.
+      #
+      # WARNING This depends heavily on global data in the Liquid::Template
+      # universe, which I hate, but which I couldn't figure out how to
+      # avoid. There be magic here. Please, if you have energy, figure out
+      # how not to depend on that magic. Copy the magic here, if you can.
+      #
+      example "happy path" do
+        pending "WIP" do
+          rendered_html = RendersCodeUsingOctopressCodeBlock.render(GistFile.new("::code::", "::title::", "::url::"))
+          # Spot checks. I don't want to get into comparing HTML just yet.
+          # If I need to check the HTML more carefully, then I'll dive into
+          # how to do that without wanting to gouge out my eyes.
+          rendered_html.should =~ %r{::code::}
+          rendered_html.should =~ %r{::title::}
+          rendered_html.should =~ %r{::url::}
+        end
+      end
+
+      context "generating codeblock from GistFile" do
+        def render_gist_file_as_code_block(gist_file)
+          <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+        end
+
+        example "happy path" do
+          gist_file = GistFile.new("::code::", "::filename::", "::gist URL::")
+          codeblock_source = render_gist_file_as_code_block(gist_file)
+          # I'd rather compare abstract syntax trees or something, but I really
+          # don't want to reimplement a parser.
+          codeblock_source.should =~ %r[{%\s+codeblock\s+::filename::\s+::gist\ URL::\s+%}\s+::code::\s+{%\s+endcodeblock\s+%}]mx
+        end
+
+        example "nils" do
+          empty_codeblock_regex = Regexp.new([%w({% codeblock %} {% endcodeblock %})].join("\\s+"), Regexp::MULTILINE)
+          render_gist_file_as_code_block(GistFile.new(nil, nil, nil)).should =~ empty_codeblock_regex
+        end
+
+        example "what if somehow {% and %} get into the code?!" do
+          pending "I don't know how to do this yet"
+          render_gist_file_as_code_block(GistFile.new("{% code not playing nicely %}", "{% filename not playing nicely %}", "{% gist URL not playing nicely %}")).should =~ Regexp.new(%w({% codeblock ).join("\\s+"), Regexp::MULTILINE)
+        end
+      end
+      context "rendering codeblock"
+
+      example "rendering codeblock fails"
+      example "generating codeblock fails"
     end
   end
 
