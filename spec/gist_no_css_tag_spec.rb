@@ -394,7 +394,56 @@ CODEBLOCK
           expect { render_gist_file_as_code_block(GistFile.new("code is safe, so don't worry about it", "{% filename not playing nicely %}", "{% gist URL not playing nicely %}")) }.to raise_error(ArgumentError) { |e| e.message.should =~ %r[Liquid can't handle % or { or } inside tags, so don't do it.] }
         end
       end
-      context "rendering codeblock"
+
+      context "rendering codeblock" do
+        class RendersCodeblockWithLiquidTemplate
+          def self.render(template)
+            Liquid::Template.parse(template).render(Liquid::Context.new)
+          end
+        end
+
+        # ASSUME codeblock_template has been sanitised for my protection
+        def render_codeblock_with_liquid(codeblock_template)
+          RendersCodeblockWithLiquidTemplate.render(codeblock_template)
+        end
+
+        example "happy path" do
+          codeblock_template = <<-TEMPLATE
+{% codeblock TestingIoFailure.java https://gist.github.com/jbrains/4111662 %}
+@Test
+public void ioFailure() throws Exception {
+    final IOException ioFailure = new IOException("Simulating a failure writing to the file.");
+    try {
+        new WriteTextToFileActionImpl() {
+            @Override
+            protected FileWriter fileWriterOn(File path) throws IOException {
+                return new FileWriter(path) {
+                    @Override
+                    public void write(String str, int off, int len) throws IOException {
+                        throw ioFailure;
+                    }
+                };
+            }
+        }.writeTextToFile("::text::", new File("anyWritableFile.txt"));
+        fail("How did you survive the I/O failure?!");
+    } catch (IOException success) {
+        if (success != ioFailure)
+            throw success;
+    }
+}
+{% endcodeblock %}
+TEMPLATE
+          
+          rendered = render_codeblock_with_liquid(codeblock_template)
+          # Spot checks, rather than checking the entire content.
+          # Is the title there?
+          rendered.should =~ %r{TestingIoFailure.java}m
+          # Is the URL there?
+          rendered.should =~ %r{https://gist.github.com/jbrains/4111662}m
+          # Do we probably have the expected code? (Where else would this come from?)
+          rendered.should =~ %r{fail.+How did you survive the I/O failure\?\!}m
+        end
+      end
 
       example "rendering codeblock fails"
       example "generating codeblock fails"
