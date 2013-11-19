@@ -245,22 +245,6 @@ describe "gist_no_css tag" do
 
   GistFile = Struct.new(:code, :filename, :gist_url)
 
-  class RendersCodeUsingOctopressCodeBlock
-    def initialize(octopress_code_block_class, liquid_context)
-      raise "I have this utterly and hopelessly wrong"
-    end
-
-    def render(code, title, url)
-      raise "I have this utterly and hopelessly wrong"
-    rescue => oops
-      StringIO.new.tap { | canvas | canvas.puts "<!--", "I failed to render the code", oops.message, oops.backtrace, "title: #{title}", "url: #{url}", "code: #{code}", "-->" }.string
-    end
-
-    def self.render(gist_file)
-      "Intentionally nothing yet"
-    end
-  end
-
   context "contracts" do
     pending "None of this will work until I figure out how to use CodeBlock correctly" do
       context "Renders Code" do
