@@ -1,5 +1,5 @@
-require "jekyll" # I depend on Liquid
-require "plugins/code_block" # I need the codeblock tag registered in Liquid
+# require "jekyll" # I depend on Liquid
+# require "plugins/code_block" # I need the codeblock tag registered in Liquid; I'd require this, but then I'd have to use a relative-path require, which I simply won't do.
 require "faraday"
 require "faraday_middleware"
 
