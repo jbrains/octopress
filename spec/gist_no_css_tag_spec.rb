@@ -253,24 +253,6 @@ describe "gist_no_css tag" do
     end
   end
 
-
-  context "contracts" do
-    pending "None of this will work until I figure out how to use CodeBlock correctly" do
-      context "Renders Code" do
-        subject { RendersCodeUsingOctopressCodeBlock.new() }
-
-        example "responds to render(code, title, url)" do
-          subject.should respond_to(:render)
-        end
-
-        example "renders text" do
-          subject.render("::code::", "::title::", "::url::").should be_kind_of(String)
-          subject.render("::code::", "::title::", "::url::").should == ""
-        end
-      end
-    end
-  end
-
   require "jekyll" # only because the CodeBlock plugin doesn't do this
   require "plugins/code_block" # registers the CodeBlock tag, which we need
 
