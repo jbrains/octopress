@@ -46,7 +46,7 @@ TEMPLATE
   end
 
   example "do not try to use multiple Liquid 'raw' tags in a line, because they're greedy" do
-    pending "I have opened https://github.com/Shopify/liquid/issues/280 with Shopify/liquid" do
+    pending "This is scheduled to work in Liquid v2.6" do
       Liquid::Template.parse(["{% codeblock %}", "A line with {% raw %}{% {% endraw %} and {% raw %} %}{% endraw %} in it, which need to be escaped for Liquid.", "{% endcodeblock %}"].join("\n")).render(Liquid::Context.new).should =~ /A\ line\ with\ \{\%\ and\ \%\}\ in\ it/
     end
   end
