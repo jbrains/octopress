@@ -41,7 +41,7 @@ class DownloadsGistUsingFaraday
     end
     response = http_get(base, uri)
 
-    return GistFile.new(response.body, pretty_url, nil) unless (400..599).include?(response.status.to_i)
+    return GistFile.new(response.body, pretty_url, filename) unless (400..599).include?(response.status.to_i)
     raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
   end
 
@@ -94,7 +94,7 @@ describe "gist_no_css tag" do
       subject { DownloadsGistUsingFaraday.new.tap { | d | d.stub(:http_get).and_return(double("like a Faraday response", body: "::code::", status: 200)) } }
 
       example "happy path" do
-        subject.download(GistFileKey.new(1, "::username::", "::filename::")).should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
+        subject.download(GistFileKey.new(1, "::username::", "::filename::")).should == GistFile.new("::code::", "https://gist.github.com/::username::/1", "::filename::")
       end
 
       example "filename not specified" do
@@ -102,7 +102,7 @@ describe "gist_no_css tag" do
       end
 
       example "username not specified" do
-        subject.download(GistFileKey.new(1, nil, "::filename::")).should == GistFile.new("::code::", "https://gist.github.com/1")
+        subject.download(GistFileKey.new(1, nil, "::filename::")).should == GistFile.new("::code::", "https://gist.github.com/1", "::filename::")
       end
 
       example "neither username nor filename specified" do
@@ -125,7 +125,7 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java")).code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java")).should == GistFile.new(Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body, "https://gist.github.com/jbrains/4111662", "TestingIoFailure.java")
             end
           end
 
