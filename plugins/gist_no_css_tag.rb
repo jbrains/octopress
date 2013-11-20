@@ -1,6 +1,94 @@
+# You, dear caller, must require these for me. I don't know why I don't just do it.
+# require "jekyll" # I depend on Liquid
+# require "plugins/code_block" # I need the codeblock tag registered in Liquid
+
 # mandatory: gist_id
 # optional: username, filename
 GistFileKey = Struct.new(:gist_id, :username, :filename)
+
+# mandatory: code, gist_url
+# optional: filename
+GistFile = Struct.new(:code, :gist_url, :filename)
+
+class GistNoCssTag
+  def initialize(renders_code, downloads_gist)
+    @renders_code = renders_code
+    @downloads_gist = downloads_gist
+  end
+
+  def self.with(collaborators_as_hash)
+    self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
+  end
+
+  def render(gist_file_key)
+    # REFACTOR COMPOSE, MOTHERFUCKER!
+    @renders_code.render(@downloads_gist.download(gist_file_key))
+  rescue => oops
+    StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
+  end
+end
+
+class DownloadsGistUsingFaraday
+  def download(gist_file_key)
+    base = "https://gist.github.com"
+    gist_id = gist_file_key.gist_id
+    username = gist_file_key.username
+    filename = gist_file_key.filename
+
+    filename_portion = "/#{filename}" if filename
+    if username
+      raw_url = "#{base}/#{username}/#{gist_id}/raw#{filename_portion}"
+      pretty_url = "#{base}/#{username}/#{gist_id}"
+      uri = "/#{username}/#{gist_id}/raw#{filename_portion}"
+    else
+      raw_url = "#{base}/raw/#{gist_id}#{filename_portion}"
+      pretty_url = "#{base}/#{gist_id}"
+      uri = "/raw/#{gist_id}#{filename_portion}"
+    end
+    response = http_get(base, uri)
+
+    return GistFile.new(response.body, pretty_url, filename) unless (400..599).include?(response.status.to_i)
+    raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
+  end
+
+  # REFACTOR Move this onto a collaborator
+  def http_get(base, uri)
+    faraday_with_default_adapter(base) { | connection |
+      connection.use FaradayMiddleware::FollowRedirects, limit: 1
+    }.get(uri)
+  end
+
+  # REFACTOR Move this into Faraday
+  # REFACTOR Rename this something more intention-revealing
+  def faraday_with_default_adapter(base, &block)
+    Faraday.new(base) { | connection |
+      yield connection
+
+    # IMPORTANT Without this line, nothing will happen.
+    connection.adapter Faraday.default_adapter
+    }
+  end
+end
+
+# Everything in here knows about Liquid
+class RendersGistFileAsHtml
+  def render_gist_file_as_code_block(gist_file)
+    raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
+    <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+  end
+
+  def render_code_block_as_html(code_block)
+    Liquid::Template.parse(code_block).render(Liquid::Context.new)
+  end
+
+  def render(gist_file)
+    render_code_block_as_html(render_gist_file_as_code_block(gist_file))
+  end
+end
 
 # I don't know why this needs to reside in module Jekyll, but
 # I'm going with it for now.
