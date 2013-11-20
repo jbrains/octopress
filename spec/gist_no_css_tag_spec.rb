@@ -65,7 +65,7 @@ require "jekyll" # only because the CodeBlock plugin doesn't do this
 require "plugins/code_block" # registers the CodeBlock tag, which we need
 
 # Everything in here knows about Liquid
-class RenderGistFileAsHtml
+class RendersGistFileAsHtml
   def render_gist_file_as_code_block(gist_file)
     raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
     <<-CODEBLOCK
@@ -290,7 +290,7 @@ describe "gist_no_css tag" do
       # how not to depend on that magic. Copy the magic here, if you can.
       #
       example "happy path" do
-        render_gist_file = RenderGistFileAsHtml.new
+        render_gist_file = RendersGistFileAsHtml.new
         render_gist_file.stub(:render_gist_file_as_code_block).with("::gist file::").and_return("::code block::")
         render_gist_file.stub(:render_code_block_as_html).with("::code block::").and_return("::html::")
 
@@ -307,7 +307,7 @@ describe "gist_no_css tag" do
 
       context "generating codeblock from GistFile" do
         def render_gist_file_as_code_block(gist_file)
-          RenderGistFileAsHtml.new.render_gist_file_as_code_block(gist_file)
+          RendersGistFileAsHtml.new.render_gist_file_as_code_block(gist_file)
         end
 
         example "happy path" do
@@ -335,7 +335,7 @@ describe "gist_no_css tag" do
       context "rendering codeblock" do
         # ASSUME codeblock_template has been sanitised for my protection
         def render_code_block(codeblock_template)
-          RenderGistFileAsHtml.new.render_code_block_as_html(codeblock_template)
+          RendersGistFileAsHtml.new.render_code_block_as_html(codeblock_template)
         end
 
         example "happy path" do
