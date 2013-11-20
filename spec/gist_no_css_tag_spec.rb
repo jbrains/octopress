@@ -175,7 +175,7 @@ describe "gist_no_css tag" do
         downloads_gist.should_receive(:download).with("::gist file key::").and_return("::gist file description::")
         renders_code.should_receive(:render).with("::gist file description::").and_return("::rendered HTML fragment::")
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should == "::rendered HTML fragment::"
+        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should == "::rendered HTML fragment::"
       end
 
       example "failure rendering code" do
@@ -184,7 +184,7 @@ describe "gist_no_css tag" do
 
         renders_code.stub(:render).and_raise("I failed to render the code")
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to render the code.+-->/m
+        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to render the code.+-->/m
       end
 
       example "failure downloading gist" do
@@ -194,7 +194,7 @@ describe "gist_no_css tag" do
         downloads_gist.stub(:download).and_raise("I failed to download the gist")
         renders_code.should_not_receive(:render)
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to download the gist.+-->/m
+        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to download the gist.+-->/m
       end
     end
   end

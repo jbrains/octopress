@@ -10,7 +10,7 @@ GistFileKey = Struct.new(:gist_id, :username, :filename)
 # optional: filename
 GistFile = Struct.new(:code, :gist_url, :filename)
 
-class GistNoCssTag
+class RendersGistWithoutCss
   def initialize(renders_code, downloads_gist)
     @renders_code = renders_code
     @downloads_gist = downloads_gist
@@ -20,6 +20,7 @@ class GistNoCssTag
     self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
   end
 
+  # This function promises not to raise an error
   def render(gist_file_key)
     # REFACTOR COMPOSE, MOTHERFUCKER!
     @renders_code.render(@downloads_gist.download(gist_file_key))
