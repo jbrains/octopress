@@ -184,7 +184,7 @@ describe "gist_no_css tag" do
 
         renders_code.stub(:render).and_raise("I failed to render the code")
 
-        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to render the code.+-->/m
+        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ %r[I failed to render the code.]m
       end
 
       example "failure downloading gist" do
@@ -194,7 +194,7 @@ describe "gist_no_css tag" do
         downloads_gist.stub(:download).and_raise("I failed to download the gist")
         renders_code.should_not_receive(:render)
 
-        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to download the gist.+-->/m
+        RendersGistWithoutCss.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ %r[I failed to download the gist.]m
       end
     end
   end
@@ -312,12 +312,21 @@ TEMPLATE
     end
 
     describe "render()" do
-      example "happy path"
-      example "failure in rendering abstract tag"
+      example "happy path" do
+        Jekyll::GistNoCssTag.new("jekyll::gistnocsstag", "jbrains/4111662 TestingIoFailure.java", []).render(Liquid::Context.new).should =~ %r[fail.+How did you survive]m
+      end
+
+      example "promises never to raise an error" do
+        # Nothing to check
+      end
     end
 
     describe "initialize()" do
       context "happy paths" do
+        example "even with the caller throw us some leading and trailing whitespace" do
+          Jekyll::GistNoCssTag.parse_parameters("\t\r\n jbrains/1234 Gist1.java \r\n\t").should == GistFileKey.new(1234, "jbrains", "Gist1.java")
+        end
+
         example "specify everything" do
           Jekyll::GistNoCssTag.parse_parameters("jbrains/1234 Gist1.java").should == GistFileKey.new(1234, "jbrains", "Gist1.java")
         end

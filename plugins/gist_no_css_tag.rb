@@ -1,6 +1,7 @@
-# You, dear caller, must require these for me. I don't know why I don't just do it.
-# require "jekyll" # I depend on Liquid
-# require "plugins/code_block" # I need the codeblock tag registered in Liquid
+require "jekyll" # I depend on Liquid
+require "plugins/code_block" # I need the codeblock tag registered in Liquid
+require "faraday"
+require "faraday_middleware"
 
 # mandatory: gist_id
 # optional: username, filename
@@ -25,7 +26,11 @@ class RendersGistWithoutCss
     # REFACTOR COMPOSE, MOTHERFUCKER!
     @renders_code.render(@downloads_gist.download(gist_file_key))
   rescue => oops
-    StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
+    # I tried to do this with an HTML comment,
+    # but a RubyPants filter ate my --> delimeters,
+    # so I opted for Javascript comments, instead.
+    # Wow.
+    StringIO.new.tap { |canvas| canvas.puts "<script>", "/*", oops.message, oops.backtrace, "*/", "</script>" }.string
   end
 end
 
@@ -102,17 +107,20 @@ module Jekyll
     end
 
     def self.parse_parameters(parameters)
-      match_data = /^(?:(.+)\/)?(\d+)(?:\s+([^\s]+))?$/.match(parameters)
+      match_data = /^(?:(.+)\/)?(\d+)(?:\s+([^\s]+))?$/.match(parameters.strip)
       begin
         Integer(match_data[2])
       rescue
-        raise ArgumentError.new(parameters)
+        raise ArgumentError.new("Parameters: '#{parameters}'; Match Data: '#{match_data}.'")
       end
       GistFileKey.new(match_data[2].to_i, match_data[1], match_data[3])
     end
 
     def render(context)
-      "<pre>#{CGI.escapeHTML(self.inspect.to_s)}</pre>"
+      RendersGistWithoutCss.new(
+        RendersGistFileAsHtml.new, 
+        DownloadsGistUsingFaraday.new
+      ).render(self.class.parse_parameters(@parameters))
     end
   end
 end
