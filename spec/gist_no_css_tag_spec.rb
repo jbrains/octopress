@@ -201,22 +201,6 @@ describe "gist_no_css tag" do
         }.to raise_error(intentional_failure)
       end
     end
-
-    context "parsing tag parameters", future: true do
-      example "all parameters specified" do
-        pending
-        # Remember to call the codeblock with filename, then URL
-      end
-      example "username not specified"
-      example "filename not specified"
-      example "only gist ID specified"
-      context "failure cases" do
-        example "no parameters"
-        example "only username"
-        example "only filename"
-        example "username and filename"
-      end
-    end
   end
 
   context "putting the pieces together" do
@@ -462,9 +446,9 @@ TEMPLATE
           "",
           "...",
         ].each do | bad_parameters_text |
-        example "#{bad_parameters_text} is invalid" do
-          expect { Jekyll::GistNoCssTag.parse_parameters(bad_parameters_text) }.to raise_error(ArgumentError)
-        end
+          example "#{bad_parameters_text} is invalid" do
+            expect { Jekyll::GistNoCssTag.parse_parameters(bad_parameters_text) }.to raise_error(ArgumentError)
+          end
         end
       end
     end
