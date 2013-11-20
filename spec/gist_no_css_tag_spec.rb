@@ -125,7 +125,7 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java")).should == GistFile.new(Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body, "https://gist.github.com/jbrains/4111662", "TestingIoFailure.java")
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java")).code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
