@@ -15,15 +15,15 @@ group :development do
   gem 'stringex', '~> 1.4.0'
   gem 'liquid', '~> 2.3.0'
   gem 'directory_watcher', '1.4.1'
-  gem 'pry'
-  gem 'pry-debugger'
-  gem 'rspec'
+  gem 'faraday'
+  gem 'faraday_middleware'
 end
 
 group :test do
+  gem 'rspec'
   gem 'vcr'
-  gem 'faraday'
-  gem 'faraday_middleware'
+  gem 'pry'
+  gem 'pry-debugger'
 end
 
 gem 'sinatra', '~> 1.4.2'
