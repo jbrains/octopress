@@ -23,7 +23,7 @@ end
 
 class DownloadsGistUsingFaraday
   # options: username, filename
-  def download(gist_file_key, gist_id, options = {})
+  def download(gist_file_key, unused_gist_id, unused_options = {})
     base = "https://gist.github.com"
     gist_id = gist_file_key.gist_id
     username = gist_file_key.username
