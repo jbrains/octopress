@@ -1,50 +1,91 @@
 require "rspec"
 
+# :filename is optional
+GistFile = Struct.new(:code, :gist_url, :filename)
+
+class DownloadsGistUsingFaraday
+  # options: username, filename
+  def download(gist_id, options = {})
+    base = "https://gist.github.com"
+    if options[:username]
+      filename_portion = "/#{options[:filename]}" if options[:filename]
+      raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+      pretty_url = "https://gist.github.com/#{options[:username]}/#{gist_id}"
+      uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+    else
+      filename_portion = "/#{options[:filename]}" if options[:filename]
+      raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
+      pretty_url = "https://gist.github.com/#{gist_id}"
+      uri = "/raw/#{gist_id}#{filename_portion}"
+    end
+    response = http_get(base, uri)
+
+    return GistFile.new(response.body, pretty_url, nil) unless (400..599).include?(response.status.to_i)
+    raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
+  end
+
+  # REFACTOR Move this onto a collaborator
+  def http_get(base, uri)
+    faraday_with_default_adapter(base) { | connection |
+      connection.use FaradayMiddleware::FollowRedirects, limit: 1
+    }.get(uri)
+  end
+
+  # REFACTOR Move this into Faraday
+  # REFACTOR Rename this something more intention-revealing
+  def faraday_with_default_adapter(base, &block)
+    Faraday.new(base) { | connection |
+      yield connection
+
+    # IMPORTANT Without this line, nothing will happen.
+    connection.adapter Faraday.default_adapter
+    }
+  end
+end
+
+class GistNoCssTag
+  def initialize(renders_code, downloads_gist)
+    @renders_code = renders_code
+    @downloads_gist = downloads_gist
+  end
+
+  def self.with(collaborators_as_hash)
+    self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
+  end
+
+  # SMELL This method doesn't yet say what it's downloading to render!
+  def render()
+    @renders_code.render(@downloads_gist.download())
+  rescue => oops
+    StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
+  end
+end
+
+require "jekyll" # only because the CodeBlock plugin doesn't do this
+require "plugins/code_block" # registers the CodeBlock tag, which we need
+
+# Everything in here knows about Liquid
+class RenderGistFileAsHtml
+  def render_gist_file_as_code_block(gist_file)
+    raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
+    <<-CODEBLOCK
+{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
+#{gist_file.code}
+{% endcodeblock %}
+CODEBLOCK
+  end
+
+  def render_code_block_as_html(code_block)
+    Liquid::Template.parse(code_block).render(Liquid::Context.new)
+  end
+
+  def render(gist_file)
+    render_code_block_as_html(render_gist_file_as_code_block(gist_file))
+  end
+end
+
 describe "gist_no_css tag" do
   context "the pieces" do
-    # :filename is optional
-    GistFile = Struct.new(:code, :gist_url, :filename)
-    
-    class DownloadsGistUsingFaraday
-      # options: username, filename
-      def download(gist_id, options = {})
-        base = "https://gist.github.com"
-        if options[:username]
-          filename_portion = "/#{options[:filename]}" if options[:filename]
-          raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
-          pretty_url = "https://gist.github.com/#{options[:username]}/#{gist_id}"
-          uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
-        else
-          filename_portion = "/#{options[:filename]}" if options[:filename]
-          raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
-          pretty_url = "https://gist.github.com/#{gist_id}"
-          uri = "/raw/#{gist_id}#{filename_portion}"
-        end
-        response = http_get(base, uri)
-
-        return GistFile.new(response.body, pretty_url, nil) unless (400..599).include?(response.status.to_i)
-        raise RuntimeError.new(StringIO.new.tap { |s| s.puts "I failed to download the gist at #{raw_url}", response.inspect.to_s }.string)
-      end
-
-      # REFACTOR Move this onto a collaborator
-      def http_get(base, uri)
-        faraday_with_default_adapter(base) { | connection |
-          connection.use FaradayMiddleware::FollowRedirects, limit: 1
-        }.get(uri)
-      end
-
-      # REFACTOR Move this into Faraday
-      # REFACTOR Rename this something more intention-revealing
-      def faraday_with_default_adapter(base, &block)
-        Faraday.new(base) { | connection |
-          yield connection
-
-          # IMPORTANT Without this line, nothing will happen.
-          connection.adapter Faraday.default_adapter
-        }
-      end
-    end
-
     # Intentionally link to the gist page, rather than the raw code.
     context "packaging the GistFile" do
       subject { DownloadsGistUsingFaraday.new.tap { | d | d.stub(:http_get).and_return(double("like a Faraday response", body: "::code::", status: 200)) } }
@@ -205,24 +246,6 @@ describe "gist_no_css tag" do
 
   context "putting the pieces together" do
     describe "render()" do
-      class GistNoCssTag
-        def initialize(renders_code, downloads_gist)
-          @renders_code = renders_code
-          @downloads_gist = downloads_gist
-        end
-
-        def self.with(collaborators_as_hash)
-          self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
-        end
-
-        # SMELL This method doesn't yet say what it's downloading to render!
-        def render()
-          @renders_code.render(@downloads_gist.download())
-        rescue => oops
-          StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
-        end
-      end
-
       example "happy path" do
         renders_code = double("I render the code")
         downloads_gist = double("I download the gist", download: "::gist file description::")
@@ -253,31 +276,7 @@ describe "gist_no_css tag" do
     end
   end
 
-  require "jekyll" # only because the CodeBlock plugin doesn't do this
-  require "plugins/code_block" # registers the CodeBlock tag, which we need
-
-  # Everything in here knows about Liquid
-  class RenderGistFileAsHtml
-    def render_gist_file_as_code_block(gist_file)
-      raise ArgumentError.new(%q(Liquid can't handle % or { or } inside tags, so don't do it.)) if [gist_file.filename, gist_file.gist_url].any? { |each| each =~ %r[{|%|}] }
-      <<-CODEBLOCK
-{% codeblock #{gist_file.filename} #{gist_file.gist_url} %}
-#{gist_file.code}
-{% endcodeblock %}
-CODEBLOCK
-    end
-
-    def render_code_block_as_html(code_block)
-      Liquid::Template.parse(code_block).render(Liquid::Context.new)
-    end
-
-    def render(gist_file)
-      render_code_block_as_html(render_gist_file_as_code_block(gist_file))
-    end
-  end
-
   context "integrating the pieces with other Octopress plugins" do
-
     context "rendering the gist file with a CodeBlock" do
       # Assume we've already successfully downloaded code
       #
