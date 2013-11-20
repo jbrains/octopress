@@ -25,6 +25,7 @@ class DownloadsGistUsingFaraday
   # options: username, filename
   def download(gist_file_key, gist_id, options = {})
     base = "https://gist.github.com"
+    gist_id = gist_file_key.gist_id
     username = gist_file_key.username
     filename = gist_file_key.filename
     if username
