@@ -376,9 +376,6 @@ TEMPLATE
           rendered.should =~ %r{fail.+How did you survive the I/O failure\?\!}m
         end
       end
-
-      example "rendering codeblock fails"
-      example "generating codeblock fails"
     end
   end
 
