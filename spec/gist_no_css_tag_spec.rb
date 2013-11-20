@@ -22,7 +22,6 @@ class GistNoCssTag
 end
 
 class DownloadsGistUsingFaraday
-  # options: username, filename
   def download(gist_file_key)
     base = "https://gist.github.com"
     gist_id = gist_file_key.gist_id
