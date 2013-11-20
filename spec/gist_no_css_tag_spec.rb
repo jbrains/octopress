@@ -13,9 +13,9 @@ class GistNoCssTag
     self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
   end
 
-  # SMELL This method doesn't yet say what it's downloading to render!
-  def render()
-    @renders_code.render(@downloads_gist.download())
+  def render(gist_file_key)
+    # REFACTOR COMPOSE, MOTHERFUCKER!
+    @renders_code.render(@downloads_gist.download(gist_file_key))
   rescue => oops
     StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
   end
@@ -23,7 +23,7 @@ end
 
 class DownloadsGistUsingFaraday
   # options: username, filename
-  def download(gist_id, options = {})
+  def download(gist_file_key, gist_id, options = {})
     base = "https://gist.github.com"
     if options[:username]
       filename_portion = "/#{options[:filename]}" if options[:filename]
@@ -91,19 +91,19 @@ describe "gist_no_css tag" do
       subject { DownloadsGistUsingFaraday.new.tap { | d | d.stub(:http_get).and_return(double("like a Faraday response", body: "::code::", status: 200)) } }
 
       example "happy path" do
-        subject.download(1, username: "::username::", filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
+        subject.download(GistFileKey.new(1, "::username::", "::filename::"), 1, username: "::username::", filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
       end
 
       example "filename not specified" do
-        subject.download(1, username: "::username::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
+        subject.download(GistFileKey.new(1, "::username::"), 1, username: "::username::").should == GistFile.new("::code::", "https://gist.github.com/::username::/1")
       end
 
       example "username not specified" do
-        subject.download(1, filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/1")
+        subject.download(GistFileKey.new(1, nil, "::filename::"), 1, filename: "::filename::").should == GistFile.new("::code::", "https://gist.github.com/1")
       end
 
       example "neither username nor filename specified" do
-        subject.download(1).should == GistFile.new("::code::", "https://gist.github.com/1")
+        subject.download(GistFileKey.new(1), 1).should == GistFile.new("::code::", "https://gist.github.com/1")
       end
     end
 
@@ -122,20 +122,20 @@ describe "gist_no_css tag" do
         context "gist has only one file" do
           example "filename specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java"), 4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_single_file") do
-              DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TestingIoFailure.java"), 4111662, username: "jbrains", filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "filename does not match" do
             VCR.use_cassette("gist_exists_with_single_file_but_the_wrong_file") do
               lambda {
-                DownloadsGistUsingFaraday.new.download(4111662, username: "jbrains", filename: "TheWrongFilename.java")
+                DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, "jbrains", "TheWrongFilename.java"), 4111662, username: "jbrains", filename: "TheWrongFilename.java")
               }.should raise_error()
             end
           end
@@ -144,13 +144,13 @@ describe "gist_no_css tag" do
             VCR.use_cassette("gist_exists_with_single_file_username_not_specified") do
               # IMPORTANT The expected result should be the target URL, not the
               # one through which the username-less shortcut redirects!
-              DownloadsGistUsingFaraday.new.download(4111662, filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662, nil, "TestingIoFailure.java"), 4111662, filename: "TestingIoFailure.java").code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
           example "neither username nor filename specified" do
             VCR.use_cassette("gist_exists_with_single_file_username_not_specified_and_filename_not_specified") do
-              DownloadsGistUsingFaraday.new.download(4111662).code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(4111662), 4111662).code.should == Faraday.get("https://gist.github.com/jbrains/4111662/raw/TestingIoFailure.java").body
             end
           end
 
@@ -167,20 +167,20 @@ describe "gist_no_css tag" do
           context "filename specified" do
             example "matches first file" do
               VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file") do
-                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+                DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, "jbrains", "Gist1.java"), 6964587, username: "jbrains", filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
               end
             end
 
             example "matches other-than-first file" do
               VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file") do
-                DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+                DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, "jbrains", "Gist2.rb"), 6964587, username: "jbrains", filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
               end
             end
 
             example "filename does not match" do
               VCR.use_cassette("gist_exists_with_many_files_but_the_wrong_file") do
                 lambda {
-                  DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains", filename: "SoTotallyNotTheRightFile.java")
+                  DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, "jbrains", "SoTotallyNotTheRightFile.java"), 6964587, username: "jbrains", filename: "SoTotallyNotTheRightFile.java")
                 }.should raise_error()
               end
             end
@@ -188,13 +188,13 @@ describe "gist_no_css tag" do
             context "username not specified" do
               example "matches first file" do
                 VCR.use_cassette("gist_exists_with_many_files_matching_the_first_file_username_not_specified") do
-                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
+                  DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, nil, "Gist1.java"), 6964587, filename: "Gist1.java").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist1.java").body
                 end
               end
 
               example "matches other-than-first file" do
                 VCR.use_cassette("gist_exists_with_many_files_matching_not_the_first_file_username_not_specified") do
-                  DownloadsGistUsingFaraday.new.download(6964587, filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
+                  DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, nil, "Gist2.rb"), 6964587, filename: "Gist2.rb").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/Gist2.rb").body
                 end
               end
             end
@@ -202,13 +202,13 @@ describe "gist_no_css tag" do
 
           example "filename not specified" do
             VCR.use_cassette("gist_exists_with_many_files_but_not_specifying_the_filename") do
-              DownloadsGistUsingFaraday.new.download(6964587, username: "jbrains").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, "jbrains"), 6964587, username: "jbrains").code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
 
           example "neither filename nor username specified" do
             VCR.use_cassette("gist_exists_with_many_files_but_specifying_only_gist_id") do
-              DownloadsGistUsingFaraday.new.download(6964587).code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587), 6964587).code.should == Faraday.get("https://gist.github.com/jbrains/6964587/raw/#{name_of_first_file}").body
             end
           end
         end
@@ -219,7 +219,7 @@ describe "gist_no_css tag" do
           VCR.use_cassette("gist_not_found_due_to_wrong_gist_id") do
             # ASSUME No gist will ever have a negative ID.
             lambda {
-              DownloadsGistUsingFaraday.new.download(-1)
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(-1), -1)
             }.should raise_error()
           end
         end
@@ -227,7 +227,7 @@ describe "gist_no_css tag" do
         example "right gist ID, wrong username" do
           VCR.use_cassette("gist_not_found_due_to_wrong_username") do
             lambda {
-              DownloadsGistUsingFaraday.new.download(6964587, username: "notjbrains")
+              DownloadsGistUsingFaraday.new.download(GistFileKey.new(6964587, "notjbrains"), 6964587, username: "notjbrains")
             }.should raise_error()
           end
         end
@@ -238,7 +238,7 @@ describe "gist_no_css tag" do
         # SMELL I don't like the implicit dependency on an implementation detail here, but at least it's small.
         # REFACTOR Split computing the URL from downloading it, perhaps?!
         expect {
-          DownloadsGistUsingFaraday.new.tap { |d| d.stub(:http_get).and_raise(intentional_failure) }.download(6964587, username: "jbrains", filename: "Gist1.java") 
+          DownloadsGistUsingFaraday.new.tap { |d| d.stub(:http_get).and_raise(intentional_failure) }.download(GistFileKey.new(6964587, "jbrains", "Gist1.java"), 6964587, username: "jbrains", filename: "Gist1.java") 
         }.to raise_error(intentional_failure)
       end
     end
@@ -250,9 +250,10 @@ describe "gist_no_css tag" do
         renders_code = double("I render the code")
         downloads_gist = double("I download the gist", download: "::gist file description::")
 
+        downloads_gist.should_receive(:download).with("::gist file key::").and_return("::gist file description::")
         renders_code.should_receive(:render).with("::gist file description::").and_return("::rendered HTML fragment::")
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should == "::rendered HTML fragment::"
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should == "::rendered HTML fragment::"
       end
 
       example "failure rendering code" do
@@ -261,7 +262,7 @@ describe "gist_no_css tag" do
 
         renders_code.stub(:render).and_raise("I failed to render the code")
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should =~ /<!--.+I failed to render the code.+-->/m
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to render the code.+-->/m
       end
 
       example "failure downloading gist" do
@@ -271,7 +272,7 @@ describe "gist_no_css tag" do
         downloads_gist.stub(:download).and_raise("I failed to download the gist")
         renders_code.should_not_receive(:render)
 
-        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render().should =~ /<!--.+I failed to download the gist.+-->/m
+        GistNoCssTag.with(renders_code: renders_code, downloads_gist: downloads_gist).render("::gist file key::").should =~ /<!--.+I failed to download the gist.+-->/m
       end
     end
   end
