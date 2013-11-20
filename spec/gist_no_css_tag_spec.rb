@@ -3,6 +3,24 @@ require "rspec"
 # :filename is optional
 GistFile = Struct.new(:code, :gist_url, :filename)
 
+class GistNoCssTag
+  def initialize(renders_code, downloads_gist)
+    @renders_code = renders_code
+    @downloads_gist = downloads_gist
+  end
+
+  def self.with(collaborators_as_hash)
+    self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
+  end
+
+  # SMELL This method doesn't yet say what it's downloading to render!
+  def render()
+    @renders_code.render(@downloads_gist.download())
+  rescue => oops
+    StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
+  end
+end
+
 class DownloadsGistUsingFaraday
   # options: username, filename
   def download(gist_id, options = {})
@@ -40,24 +58,6 @@ class DownloadsGistUsingFaraday
     # IMPORTANT Without this line, nothing will happen.
     connection.adapter Faraday.default_adapter
     }
-  end
-end
-
-class GistNoCssTag
-  def initialize(renders_code, downloads_gist)
-    @renders_code = renders_code
-    @downloads_gist = downloads_gist
-  end
-
-  def self.with(collaborators_as_hash)
-    self.new(collaborators_as_hash[:renders_code], collaborators_as_hash[:downloads_gist])
-  end
-
-  # SMELL This method doesn't yet say what it's downloading to render!
-  def render()
-    @renders_code.render(@downloads_gist.download())
-  rescue => oops
-    StringIO.new.tap { |canvas| canvas.puts "<!--", oops.message, oops.backtrace, "-->" }.string
   end
 end
 
