@@ -335,7 +335,7 @@ CODEBLOCK
 
       context "rendering codeblock" do
         # ASSUME codeblock_template has been sanitised for my protection
-        def render_codeblock_with_liquid(codeblock_template)
+        def render_code_block(codeblock_template)
           RenderGistFileAsHtml.new.render_code_block_as_html(codeblock_template)
         end
 
@@ -366,7 +366,7 @@ public void ioFailure() throws Exception {
 {% endcodeblock %}
 TEMPLATE
           
-          rendered = render_codeblock_with_liquid(codeblock_template)
+          rendered = render_code_block(codeblock_template)
           # Spot checks, rather than checking the entire content.
           # Is the title there?
           rendered.should =~ %r{TestingIoFailure.java}m
