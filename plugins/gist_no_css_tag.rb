@@ -1,7 +1,10 @@
+# mandatory: gist_id
+# optional: username, filename
+GistFileKey = Struct.new(:gist_id, :username, :filename)
 
+# I don't know why this needs to reside in module Jekyll, but
+# I'm going with it for now.
 module Jekyll
-  GistNoCssTagParameters = Struct.new(:gist_id, :username, :filename)
-
   class GistNoCssTag < Liquid::Tag
     def initialize(tag_name, parameters, tokens)
       @tag_name = name
@@ -16,7 +19,7 @@ module Jekyll
       rescue
         raise ArgumentError.new(parameters)
       end
-      GistNoCssTagParameters.new(match_data[2].to_i, match_data[1], match_data[3])
+      GistFileKey.new(match_data[2].to_i, match_data[1], match_data[3])
     end
 
     def render(context)

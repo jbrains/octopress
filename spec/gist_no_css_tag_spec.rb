@@ -396,19 +396,19 @@ TEMPLATE
     describe "initialize()" do
       context "happy paths" do
         example "specify everything" do
-          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234 Gist1.java").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", "Gist1.java")
+          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234 Gist1.java").should == GistFileKey.new(1234, "jbrains", "Gist1.java")
         end
 
         example "omit username" do
-          Jekyll::GistNoCssTag.parse_parameters("1234 Gist1.java").should == Jekyll::GistNoCssTagParameters.new(1234, nil, "Gist1.java")
+          Jekyll::GistNoCssTag.parse_parameters("1234 Gist1.java").should == GistFileKey.new(1234, nil, "Gist1.java")
         end
 
         example "omit filename" do
-          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234").should == Jekyll::GistNoCssTagParameters.new(1234, "jbrains", nil)
+          Jekyll::GistNoCssTag.parse_parameters("jbrains/1234").should == GistFileKey.new(1234, "jbrains", nil)
         end
 
         example "omit username and filename" do
-          Jekyll::GistNoCssTag.parse_parameters("1234").should == Jekyll::GistNoCssTagParameters.new(1234, nil, nil)
+          Jekyll::GistNoCssTag.parse_parameters("1234").should == GistFileKey.new(1234, nil, nil)
         end
       end
 
