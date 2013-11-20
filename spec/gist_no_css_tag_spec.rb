@@ -28,15 +28,15 @@ class DownloadsGistUsingFaraday
     gist_id = gist_file_key.gist_id
     username = gist_file_key.username
     filename = gist_file_key.filename
+
+    filename_portion = "/#{filename}" if filename
     if username
-      filename_portion = "/#{filename}" if filename
-      raw_url = "https://gist.github.com/#{username}/#{gist_id}/raw#{filename_portion}"
-      pretty_url = "https://gist.github.com/#{username}/#{gist_id}"
+      raw_url = "#{base}/#{username}/#{gist_id}/raw#{filename_portion}"
+      pretty_url = "#{base}/#{username}/#{gist_id}"
       uri = "/#{username}/#{gist_id}/raw#{filename_portion}"
     else
-      filename_portion = "/#{filename}" if filename
-      raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
-      pretty_url = "https://gist.github.com/#{gist_id}"
+      raw_url = "#{base}/raw/#{gist_id}#{filename_portion}"
+      pretty_url = "#{base}/#{gist_id}"
       uri = "/raw/#{gist_id}#{filename_portion}"
     end
     response = http_get(base, uri)
