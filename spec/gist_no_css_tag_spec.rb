@@ -25,13 +25,15 @@ class DownloadsGistUsingFaraday
   # options: username, filename
   def download(gist_file_key, gist_id, options = {})
     base = "https://gist.github.com"
-    if options[:username]
-      filename_portion = "/#{options[:filename]}" if options[:filename]
-      raw_url = "https://gist.github.com/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
-      pretty_url = "https://gist.github.com/#{options[:username]}/#{gist_id}"
-      uri = "/#{options[:username]}/#{gist_id}/raw#{filename_portion}"
+    username = gist_file_key.username
+    filename = gist_file_key.filename
+    if username
+      filename_portion = "/#{filename}" if filename
+      raw_url = "https://gist.github.com/#{username}/#{gist_id}/raw#{filename_portion}"
+      pretty_url = "https://gist.github.com/#{username}/#{gist_id}"
+      uri = "/#{username}/#{gist_id}/raw#{filename_portion}"
     else
-      filename_portion = "/#{options[:filename]}" if options[:filename]
+      filename_portion = "/#{filename}" if filename
       raw_url = "https://gist.github.com/raw/#{gist_id}#{filename_portion}"
       pretty_url = "https://gist.github.com/#{gist_id}"
       uri = "/raw/#{gist_id}#{filename_portion}"
